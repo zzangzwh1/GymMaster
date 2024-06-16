@@ -5,7 +5,12 @@
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
 }
+#navbarNav
+{
+  justify-content: center;
+  text-align: center;
 
+}
 nav {
     justify-content: center;
     text-align: center;
@@ -31,17 +36,25 @@ nav ul li:after{
   content: '';
   width: 0;
   height: 3px;
+
   background: #2192ff;
   position: absolute;
   left: 0;
   bottom: -10px;
   transition: 0.5s;
 }
+
 nav ul li:hover::after{
   width:100%;
 }
+nav ul li :hover{
+  color:black ;
+}
+
 svg{
     width: 1.5rem; 
     height: 1rem; 
     vertical-align: middle;
 }
+/* Media query for larger screens */
+
