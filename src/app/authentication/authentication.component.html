@@ -1,15 +1,31 @@
 <section class="loginSection">
-<div class="container">
+  <div class="container">
     <div class="heading">Sign In</div>
-    <form action="" class="form" *ngIf="!isRegister">
-      <input required="" class="input" type="text"  name="username" [(ngModel)]="loginInfo.username"  placeholder="UserId">
-      <input required="" class="input" type="password" name="password" [(ngModel)]="loginInfo.password" id="password" placeholder="Password">
-      <span class="forgot-password"><a routerLink="signup">Create an Account</a></span>
-      <span class="forgot-password"><a href="#">Forgot password?</a></span>
-      <input class="login-button" type="submit" value="Sign In" (click)="authentication()">
-      
+    <form class="form" (ngSubmit)="authentication()" *ngIf="!isRegister">
+      <input
+        required
+        class="input"
+        type="text"
+        name="userId"
+        [(ngModel)]="loginInfo.userId"
+        placeholder="UserId"
+      />
+      <input
+        required
+        class="input"
+        type="password"
+        name="password"
+        [(ngModel)]="loginInfo.password"
+        id="password"
+        placeholder="Password"
+      />
+      <span class="forgot-password">
+        <a routerLink="signup">Create an Account</a>
+      </span>
+      <span class="forgot-password">
+        <a href="#">Forgot password?</a>
+      </span>
+      <button class="login-button" type="submit">Sign In</button>
     </form>
-
-  
   </div>
 </section>

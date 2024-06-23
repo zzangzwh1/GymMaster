@@ -18,7 +18,7 @@ export class AuthenticationComponent {
     
   }
   loginInfo : Login ={
-    username : '',
+    userId : '',
     password : ''
   } ;
 
@@ -26,47 +26,43 @@ export class AuthenticationComponent {
 
   isRegister :boolean  =false;
   authentication() {
-    if(this.loginInfo.username !== '' && this.loginInfo.password !== ''){
-
-
-    this.authService.checkUserExists(this.loginInfo.username).subscribe(
-      isExists => {
-        console.log('User exists:', isExists);
-        if (isExists) {
-          console.log(this.loginInfo);
-          this.authService.login(this.loginInfo).subscribe(
-            response => {
-              console.log('Logged in successfully:', response);
-              // Handle successful login
-            },
-            error => {
-              console.error('Login failed:', error);
-              // Handle login error
-            }
-          );
-        } else {
-          this.authService.register(this.loginInfo).subscribe(
-            response => {
-              console.log('Registered successfully:', response);
-              // Handle successful registration
-            },
-            error => {
-              console.error('Registration failed:', error);
-              // Handle registration error
-            }
-          );
+    if (this.loginInfo.userId !== '' && this.loginInfo.password !== '') {
+      this.authService.checkUserExists(this.loginInfo.userId).subscribe(
+        isExists => {
+          console.log('User exists:', isExists);
+          if (isExists) {
+            console.log(this.loginInfo);
+            this.authService.login(this.loginInfo).subscribe({
+              next: (response) => {
+                console.log('Logged in successfully:', response);
+                // Handle successful login
+              },
+              error: (error) => {
+                console.error('Login failed:', error);
+                // Handle login error
+              }
+            });
+          } else {
+            this.authService.register(this.loginInfo).subscribe(
+              response => {
+                console.log('Registered successfully:', response);
+                // Handle successful registration
+              },
+              error => {
+                console.error('Registration failed:', error);
+                // Handle registration error
+              }
+            );
+          }
+        },
+        error => {
+          console.error('Error checking user existence:', error);
+          // Handle error
         }
-      },
-      error => {
-        console.error('Error checking user existence:', error);
-        // Handle error
-      }
-    );
-  }
-  else{
-    console.log('Fail');
-  }
+      );
+    } else {
+      console.log('Fail');
+    }
     console.log(this.loginInfo);
   }
-
 }

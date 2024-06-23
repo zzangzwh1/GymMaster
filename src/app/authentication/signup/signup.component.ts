@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
+import { AuthService } from '../../Service/auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -12,7 +13,9 @@ export class SignupComponent implements OnInit {
 
   constructor(
     private titleService: Title,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private authService : AuthService
+    
   ) { 
     this.titleService.setTitle('Sign Up'); 
   }
@@ -26,12 +29,13 @@ export class SignupComponent implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
+      address: ['', Validators.required],
       userId: ['', Validators.required],
       password: ['', Validators.required],
       confirmPassword: ['', Validators.required],
       phone: ['', Validators.required],
-      bDate: ['', Validators.required],
-      gender: ['', Validators.required]
+      birthDate: ['', Validators.required],
+      sex: ['', Validators.required]
     }, { validator: this.passwordMatchValidator });
   }
   passwordMatchValidator(form: FormGroup) {
@@ -53,16 +57,40 @@ export class SignupComponent implements OnInit {
     }
     return null;
   }
-
   onSubmit() {
     if (this.loginForm.valid) {
-      console.log(this.loginForm.value);
-      // Handle form submission logic
+      this.authService.checkUserExists(this.loginForm.value.userId).subscribe({
+        next: () => {
+          // User exists, handle the response as needed
+          console.log('UserID Already Exists');
+        
+        },
+        error: (err) => {
+          if (err.status === 404) {
+            // User does not exist, proceed with registration
+            this.authService.register(this.loginForm.value).subscribe({
+              next: (response) => {
+                console.log('Registered successfully:', response);
+                
+              },
+              error: (error) => {
+                console.error('Registration failed:', error);
+              
+              }
+            });
+          } else {
+            // Handle other errors
+            console.error('An error occurred:', err);
+          }
+        }
+      });
     } else {
       console.log('Form is invalid');
     }
   }
-
+  
+  
+  
   // Method to check form control validation status
   isFieldInvalid(field: string): boolean | undefined{
     return (
