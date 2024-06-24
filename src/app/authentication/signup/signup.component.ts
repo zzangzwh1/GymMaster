@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { AuthService } from '../../Service/auth.service';
@@ -14,10 +15,10 @@ export class SignupComponent implements OnInit {
   constructor(
     private titleService: Title,
     private fb: FormBuilder,
-    private authService : AuthService
-    
-  ) { 
-    this.titleService.setTitle('Sign Up'); 
+    private authService: AuthService, 
+    private router: Router
+  ) {
+    this.titleService.setTitle('Sign Up');
   }
 
   ngOnInit(): void {
@@ -26,18 +27,19 @@ export class SignupComponent implements OnInit {
 
   createForm(): FormGroup {
     return this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
+      firstName: ['', [Validators.required, Validators.pattern(/^[A-Za-z]+$/)]],
+      lastName: ['', [Validators.required, Validators.pattern(/^[A-Za-z]+$/)]],
       email: ['', [Validators.required, Validators.email]],
       address: ['', Validators.required],
-      userId: ['', Validators.required],
-      password: ['', Validators.required],
+      userId: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_-]{5,15}$/)]],
+      password: ['', [Validators.required]],
       confirmPassword: ['', Validators.required],
-      phone: ['', Validators.required],
+      phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
       birthDate: ['', Validators.required],
       sex: ['', Validators.required]
     }, { validator: this.passwordMatchValidator });
   }
+
   passwordMatchValidator(form: FormGroup) {
     const password = form.get('password')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;
@@ -48,6 +50,7 @@ export class SignupComponent implements OnInit {
       form.get('confirmPassword')?.setErrors(null);
     }
   }
+
   get confirmPasswordError(): string | null {
     const control = this.loginForm.get('confirmPassword');
     if (control?.hasError('required')) {
@@ -57,13 +60,13 @@ export class SignupComponent implements OnInit {
     }
     return null;
   }
+
   onSubmit() {
     if (this.loginForm.valid) {
       this.authService.checkUserExists(this.loginForm.value.userId).subscribe({
         next: () => {
           // User exists, handle the response as needed
           console.log('UserID Already Exists');
-        
         },
         error: (err) => {
           if (err.status === 404) {
@@ -71,11 +74,13 @@ export class SignupComponent implements OnInit {
             this.authService.register(this.loginForm.value).subscribe({
               next: (response) => {
                 console.log('Registered successfully:', response);
-                
+                alert(this.loginForm.value.userId +'is successfully created!');
+                this.router.navigate(['/Authentication']);
+                // Handle successful registration
               },
               error: (error) => {
                 console.error('Registration failed:', error);
-              
+                // Handle registration error
               }
             });
           } else {
@@ -86,16 +91,13 @@ export class SignupComponent implements OnInit {
       });
     } else {
       console.log('Form is invalid');
+      this.loginForm.markAllAsTouched(); // Mark all fields as touched to show validation errors
     }
   }
-  
-  
-  
+
   // Method to check form control validation status
-  isFieldInvalid(field: string): boolean | undefined{
-    return (
-      !this.loginForm.get(field)?.valid && 
-      this.loginForm.get(field)?.touched
-    );
+  isFieldInvalid(field: string): boolean | null{
+    const control = this.loginForm.get(field);
+    return control && !control.valid && control.touched;
   }
 }

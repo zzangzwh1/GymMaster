@@ -1,86 +1,84 @@
 <section class="signupSection">
-    <div class="container">
-      <div class="heading">Create an Account</div>
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form">
-        <div class="form-group custom_form_group">
-          <input class="input" type="text" formControlName="userId" id="userId" placeholder="UserID">  
-          <div *ngIf="isFieldInvalid('userId')" class="error-message">
-            User ID is required
-          </div>
+  <div class="container">
+    <div class="heading">Create an Account</div>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form">
+      <div class="form-group custom_form_group">
+        <input class="input" type="text" formControlName="userId" id="userId" placeholder="UserID">  
+        <div *ngIf="isFieldInvalid('userId')" class="error-message">
+          User ID is required and must be 5-15 characters long with letters, numbers, underscores, or hyphens.
         </div>
-  
-        <div class="form-group custom_form_group">
-          <input class="input" type="text" formControlName="firstName" id="firstName" placeholder="First Name">
-          <div *ngIf="isFieldInvalid('firstName')" class="error-message">
-            First Name is required
-          </div>
-        </div>
-  
-        <div class="form-group custom_form_group">
-          <input class="input" type="text" formControlName="lastName" id="lastName" placeholder="Last Name">
-          <div *ngIf="isFieldInvalid('lastName')" class="error-message">
-            Last Name is required
-          </div>
-        </div>
-  
-        <div class="form-group custom_form_group">
-          <input class="input" type="password" formControlName="password" id="password" placeholder="Password">
-          <div *ngIf="isFieldInvalid('password')" class="error-message">
-            Password is required
-          </div>
-        </div>
-  
-        <div class="form-group custom_form_group">
-          <input class="input" type="password" formControlName="confirmPassword" id="confirmPassword" placeholder="Confirm Password">
-          <div *ngIf="isFieldInvalid('confirmPassword')" class="error-message">
-           {{confirmPasswordError}}
-          </div>
-        </div>
-  
-        <div class="form-group custom_form_group">
-          <input class="input" type="email" formControlName="email" id="email" placeholder="E-mail">
-          <div *ngIf="isFieldInvalid('email')" class="error-message">
-            Valid Email is required
-          </div>
-        </div>
-        <div class="form-group custom_form_group">
-          <input class="input" type="text" formControlName="address" id="address" placeholder="Address">
-          <div *ngIf="isFieldInvalid('address')" class="error-message">
-            Valid Address is required
-          </div>
-        </div>
-  
-        <div class="form-group custom_form_group">
-          <input class="input" type="text" formControlName="phone" id="phone" placeholder="Phone">
-          <div *ngIf="isFieldInvalid('phone')" class="error-message">
-            Phone number is required
-          </div>
-        </div>
+      </div>
 
-        <div class="form-group custom_form_group">
-        
-            <select class="input" formControlName="sex" id="gender"  >           
-                <option value="">Select Gender</option>  
-                <option value="m">Male</option>
-                <option value="f">Female</option>
-                <option value="o">Other</option>
-              </select>
-            <div *ngIf="isFieldInvalid('sex')" class="error-message">
-              Gender is required
-            </div>
-          </div>
-
-  
-        <div class="form-group custom_form_group">
-          <span class="signupLabel"><a>Select Birth Date</a></span>
-          <input required class="input" type="date" formControlName="birthDate" id="bDate">
-          <div *ngIf="isFieldInvalid('birthDate')" class="error-message">
-            Birth Date is required
-          </div>
+      <div class="form-group custom_form_group">
+        <input class="input" type="text" formControlName="firstName" id="firstName" placeholder="First Name">
+        <div *ngIf="isFieldInvalid('firstName')" class="error-message">
+          First Name is required and must contain only letters.
         </div>
-  
-        <input class="login-button" type="submit" value="Create an Account">
-      </form>
-    </div>
-  </section>
-  
+      </div>
+
+      <div class="form-group custom_form_group">
+        <input class="input" type="text" formControlName="lastName" id="lastName" placeholder="Last Name">
+        <div *ngIf="isFieldInvalid('lastName')" class="error-message">
+          Last Name is required and must contain only letters.
+        </div>
+      </div>
+
+      <div class="form-group custom_form_group">
+        <input class="input" type="password" formControlName="password" id="password" placeholder="Password">
+        <div *ngIf="isFieldInvalid('password')" class="error-message">
+          Password is required and must be at least 8 characters long, containing at least one letter and one number.
+        </div>
+      </div>
+
+      <div class="form-group custom_form_group">
+        <input class="input" type="password" formControlName="confirmPassword" id="confirmPassword" placeholder="Confirm Password">
+        <div *ngIf="isFieldInvalid('confirmPassword')" class="error-message">
+          {{confirmPasswordError || 'Confirm Password is required'}}
+        </div>
+      </div>
+
+      <div class="form-group custom_form_group">
+        <input class="input" type="email" formControlName="email" id="email" placeholder="E-mail">
+        <div *ngIf="isFieldInvalid('email')" class="error-message">
+          Valid Email is required.
+        </div>
+      </div>
+
+      <div class="form-group custom_form_group">
+        <input class="input" type="text" formControlName="address" id="address" placeholder="Address">
+        <div *ngIf="isFieldInvalid('address')" class="error-message">
+          Valid Address is required.
+        </div>
+      </div>
+
+      <div class="form-group custom_form_group">
+        <input class="input" type="text" formControlName="phone" id="phone" placeholder="Phone">
+        <div *ngIf="isFieldInvalid('phone')" class="error-message">
+          Phone number is required and must be 10 digits.
+        </div>
+      </div>
+
+      <div class="form-group custom_form_group">
+        <select class="input" formControlName="sex" id="gender">
+          <option value="">Select Gender</option>
+          <option value="m">Male</option>
+          <option value="f">Female</option>
+          <option value="o">Other</option>
+        </select>
+        <div *ngIf="isFieldInvalid('sex')" class="error-message">
+          Gender is required.
+        </div>
+      </div>
+
+      <div class="form-group custom_form_group">
+        <span class="signupLabel"><a>Select Birth Date</a></span>
+        <input required class="input" type="date" formControlName="birthDate" id="bDate">
+        <div *ngIf="isFieldInvalid('birthDate')" class="error-message">
+          Birth Date is required.
+        </div>
+      </div>
+
+      <input class="login-button" type="submit" value="Create an Account">
+    </form>
+  </div>
+</section>
