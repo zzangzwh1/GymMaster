@@ -15,10 +15,10 @@ export class HomeComponent implements OnInit {
   }
   ngOnInit(): void {
     const currentUser = sessionStorage.getItem('userId');
-    if(currentUser != null)
-      {
-       this.username = 
-      }
+    // if(currentUser != null)
+    //   {
+    //    this.username = 
+    //   }
       console.log('Test');
 
   }
