@@ -49,7 +49,12 @@ nav ul li:hover::after{
 }
 nav ul li :hover{
   color:black ;
+
 }
+.nav-link:hover {
+  cursor: pointer;
+}
+
 
 svg{
     width: 1.5rem; 

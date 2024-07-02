@@ -49,4 +49,7 @@ export class AuthService {
     const userId = sessionStorage.getItem('userId');
     this.loggedIn.next(userId !== null);
   }
+  getUserNameByUserId(){
+    
+  }
 }
