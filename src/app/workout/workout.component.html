@@ -4,9 +4,9 @@
  
     <form [formGroup]="form">
       <mat-form-field appearance="fill">
-        <mat-label >Day</mat-label>
-        <mat-select formControlName="day">
-          <mat-option *ngFor="let day of days" [value]="day">{{ day }}</mat-option>
+        <mat-label >Select Part:</mat-label>
+        <mat-select formControlName="exercise">
+          <mat-option *ngFor="let exercise of exercises" [value]="exercise">{{ exercise }}</mat-option>
         </mat-select>
       </mat-form-field>
   
@@ -24,4 +24,15 @@
       </mat-form-field>
     </form>
   </div>
+ <div class="inputContainer"  [ngStyle]="{'display': display}">
+  <div class="inputBox">
+    <input placeholder="Write here..." type="text" required="">
+    <span>Exercise  :</span>
+  </div>
+ </div>
   
+
+
+<div class="container">  
+  <app-table></app-table>
+</div>
