@@ -26,13 +26,12 @@
   </div>
  <div class="inputContainer"  [ngStyle]="{'display': display}">
   <div class="inputBox">
-    <input placeholder="Write here..." type="text" required="">
+    <input placeholder="Write here..." type="text" required="" [(ngModel)]="currentExercise" (input)="currentInputValue()">
     <span>Exercise  :</span>
   </div>
- </div>
-  
+ </div>  
 
-
-<div class="container">  
-  <app-table></app-table>
+ <div class="container">
+  <!-- Parent Component Template -->
+  <app-table ></app-table>
 </div>

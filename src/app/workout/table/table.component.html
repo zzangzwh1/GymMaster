@@ -1,21 +1,39 @@
+
 <div class="card">
-    <p-table [value]="products" [tableStyle]="{'min-width': '50rem'}">
-      <ng-template pTemplate="header">
-        <tr>
-          <th>Code</th>
-          <th>Name</th>
-          <th>Category</th>
-          <th>Quantity</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-product>
-        <tr>
-          <td>{{product.code}}</td>
-          <td>{{product.name}}</td>
-          <td>{{product.category}}</td>
-          <td>{{product.quantity}}</td>
-        </tr>
-      </ng-template>
-    </p-table>
-  </div>
-  
+  <p-table [value]="products" [tableStyle]="{'min-width': '50rem'}">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>SET</th>
+        <th>REPS</th>
+        <th>Description</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-product let-i="rowIndex">
+      <tr>
+        <td>
+          <input 
+            type="number" 
+            [(ngModel)]="products[i].setCount" 
+            (change)="onSetCountChange(i)" 
+            min="0"
+          />
+        </td>
+        <td>
+          <input 
+            type="number" 
+            [(ngModel)]="products[i].repCount" 
+            (change)="onRepCountChange(i)" 
+            min="0"
+          />
+        </td>
+        <td>
+          <input 
+            type="text" 
+            [(ngModel)]="products[i].description" 
+            (change)="onDescriptionChange(i)"
+          />
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

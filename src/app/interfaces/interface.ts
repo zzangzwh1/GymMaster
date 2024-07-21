@@ -1,3 +1,4 @@
+import { Time } from "@angular/common";
 
 export interface Login{
     userId : '',
@@ -8,4 +9,10 @@ export interface Login{
     message?: string;
   }
 
+  export interface WorkoutData{
+    selectPart? : string,
+    selectdate? : string,
+    selectTime? : string,
+    selectExerciseDescription? :string
+  }
 
