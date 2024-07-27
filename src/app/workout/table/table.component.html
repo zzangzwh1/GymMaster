@@ -10,15 +10,11 @@
     </ng-template>
     <ng-template pTemplate="body" let-product let-i="rowIndex">
       <tr>
-        <td>
-          <input 
-            type="number" 
-            [(ngModel)]="products[i].setCount" 
-            (change)="onSetCountChange(i)" 
-            min="0"
-          />
+        <td  style="text-align: center;">
+          {{products[i].setCount}}
+      
         </td>
-        <td>
+        <td style="text-align: center;">
           <input 
             type="number" 
             [(ngModel)]="products[i].repCount" 
@@ -26,14 +22,21 @@
             min="0"
           />
         </td>
-        <td>
-          <input 
-            type="text" 
-            [(ngModel)]="products[i].description" 
-            (change)="onDescriptionChange(i)"
-          />
+        <td style="text-align: center;">
+          <textarea 
+        [(ngModel)]="products[i].description" 
+        (change)="onDescriptionChange(i)"
+        style="width: 70%; height: 60px; box-sizing: border-box; text-align: center; resize: vertical;"
+      ></textarea>
         </td>
       </tr>
     </ng-template>
   </p-table>
+</div>
+<div class="btnDiv">
+  <button class="addRowBtn" (click)="addRow()">
+   Add Exercise
+   <span></span>
+  </button>
+ 
 </div>

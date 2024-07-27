@@ -13,6 +13,7 @@ export class WorkoutComponent implements OnInit {
   public form: FormGroup;
   public exercises: string[] = ['Chest', 'Back', 'Leg', 'Shoulder', 'Arms'];
   public display: string = 'none';
+  public displayTable: string = 'none';
   public currentExercise: string = '';
   public parentWorkoutData: WorkoutData = {
     selectPart: '',
@@ -60,9 +61,13 @@ export class WorkoutComponent implements OnInit {
     }
   }
 
-  public currentInputValue(): string {
+  currentInputValue(): string {
+    
+    this.displayTable = this.currentExercise.trim().length > 0 ? 'block' : 'none';
+    // Assign currentExercise to selectExerciseDescription
     this.parentWorkoutData.selectExerciseDescription = this.currentExercise;
     console.log(this.currentExercise);
+ 
     return this.currentExercise;
   }
 }

@@ -7,6 +7,14 @@
   align-items: center;
   text-align: center;
 }
+.containerTable{
+  max-width: 90%;
+  margin: 0 auto;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
 
 h2 {
   text-align: center;
