@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup,Validators  } from '@angular/forms';
 import { combineLatest } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 import { WorkoutData } from '../interfaces/interface';
@@ -21,21 +21,22 @@ export class WorkoutComponent implements OnInit {
     selectdate: '',
     selectExerciseDescription: ''
   };
+  public productCount :any[] =[]; 
 
   constructor(
     private fb: FormBuilder
   ) {
     this.form = this.fb.group({
-      exercise: [''],
-      date: [''],
-      time: ['']
+      exercise: ['', Validators.required], 
+      date: ['', Validators.required],      
+      time: ['', Validators.required]    
     });
   }
 
   ngOnInit(): void {
     const exerciseControl = this.form.get('exercise');
     const dateControl = this.form.get('date');
-    const timeControl = this.form.get('time');
+    const timeControl = this.form.get('time'); 
 
     if (exerciseControl && dateControl && timeControl) {
       const initialExerciseValue = exerciseControl.value;
@@ -53,8 +54,7 @@ export class WorkoutComponent implements OnInit {
         console.log(selectedExercise);
         console.log(selectedTime);
         console.log(selectedDate);
-
-
+       
         // Handle the display logic
         this.display = selectedExercise ? '' : 'none';
       });
@@ -62,12 +62,52 @@ export class WorkoutComponent implements OnInit {
   }
 
   currentInputValue(): string {
+    if(this.form.get('date')?.value === '' ||this.form.get('time')?.value === ''){
+      alert('Please Select Date and Time');
+      return '';
+    }
+    else{
+      this.displayTable = this.currentExercise.trim().length > 0 ? 'block' : 'none';
+      // Assign currentExercise to selectExerciseDescription
+      this.parentWorkoutData.selectExerciseDescription = this.currentExercise;
+  
+      console.log(this.currentExercise);
+      return this.currentExercise;
+  
+     
+    }
     
-    this.displayTable = this.currentExercise.trim().length > 0 ? 'block' : 'none';
-    // Assign currentExercise to selectExerciseDescription
-    this.parentWorkoutData.selectExerciseDescription = this.currentExercise;
-    console.log(this.currentExercise);
+    
+  }
+  public countChange(products: any[]): void {
  
-    return this.currentExercise;
+    console.log(products.length);
+    console.log('TEST--------',products);
+    this.productCount= products;
+
+   // console.log('Products updated:', products);
+
+    // Process the data as needed
+    // For example, you could store it in a property or perform some actions
+    // this.updatedProducts = products;
+  }
+ public descChange(products : any[]) :void{
+    console.log('TEST2',products);
+  }
+ public UploadExercise():void{
+  console.log('Test');
+  console.log(this.productCount);
+ 
+  if (this.form.valid) {
+    
+    console.log('Form is valid. Proceeding with upload.------------------');
+    console.log('Selected Exercise:', this.form.get('exercise')?.value);
+    console.log('Date:', this.form.get('date')?.value);
+    console.log('Time:', this.form.get('time')?.value);
+    console.log('current Product Count : ',this.productCount);
+    // Add your upload logic here
+  } else {
+    console.log('Form is invalid.');
+  }
   }
 }

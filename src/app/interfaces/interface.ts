@@ -16,3 +16,13 @@ export interface Login{
     selectExerciseDescription? :string
   }
 
+  export interface RepCount {
+    setCount: number;
+    repCount: number;
+   
+  }
+  export interface Description {
+    description: string;
+ 
+   
+  }
