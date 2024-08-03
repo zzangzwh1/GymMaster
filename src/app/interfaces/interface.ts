@@ -26,3 +26,8 @@ export interface Login{
  
    
   }
+  export interface WorkoutInfo{
+    setCount: number;
+    repCount: number;
+    description: string;
+  }

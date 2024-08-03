@@ -1,5 +1,5 @@
-import { Component, OnInit ,EventEmitter, Output } from '@angular/core';
-import { Description, RepCount } from '../../interfaces/interface';
+import { Component, OnInit ,EventEmitter, Output, output } from '@angular/core';
+import { Description, RepCount ,WorkoutInfo} from '../../interfaces/interface';
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
@@ -7,11 +7,11 @@ import { Description, RepCount } from '../../interfaces/interface';
 })
 export class TableComponent implements OnInit {
 
-  @Output() dataCountChange: EventEmitter<RepCount[]> = new EventEmitter<RepCount[]>();
-  @Output() dataDescChange: EventEmitter<any> = new EventEmitter<any>();
+  @Output() dataChange: EventEmitter<WorkoutInfo[]> = new EventEmitter<WorkoutInfo[]>();
+ 
   someData: any; 
   public products: { setCount: number, repCount: number, description: string }[] = [];
-  private countArr: RepCount[] = []; // Maintain state of countArr
+  private countArr: WorkoutInfo[] = []; // Maintain state of countArr
 
   constructor() {   
   this.products.push({ setCount: 1, repCount: 0, description: '' });
@@ -24,14 +24,7 @@ export class TableComponent implements OnInit {
       repCount: 0,
       description: ''
     };
-    this.products.push(newRow);
-    let rowInfo = [];
-    if(newRow.setCount >1)
-    {
-      rowInfo.push(newRow);
-      this.dataCountChange.emit(rowInfo);
-
-    }
+    this.products.push(newRow); 
       
     console.log('AddROw',this.products);
   }
@@ -39,12 +32,15 @@ export class TableComponent implements OnInit {
   ngOnInit(): void { 
   }
 
-  onRepCountChange(index: number): void {
+  onRepCountChange(index: any): void {
     // Create the new RepCount object
-    let newRepCount: RepCount = {
+    let newRepCount: WorkoutInfo = {
       setCount: this.products.length,
-      repCount: this.products[index].repCount
+      repCount: this.products[index].repCount,
+      description :this.products[index].description
+  
     };
+    console.log('~~~~~~~~~~~~',newRepCount);
 
     // Check if the countArr needs to be updated
     const existingRepCount = this.countArr.find(item => item.setCount === newRepCount.setCount);
@@ -52,30 +48,17 @@ export class TableComponent implements OnInit {
     if (existingRepCount) {
       // Update existing item in countArr
       existingRepCount.repCount = newRepCount.repCount;
+      existingRepCount.description =newRepCount.description;
     } else {
       // Add new item if it doesn't exist
       this.countArr.push(newRepCount);
     }
 
     // Emit only if there is a change
-    this.dataCountChange.emit(this.countArr);
+    this.dataChange.emit(this.countArr);
 
     console.log('Updated countArr:', this.countArr);
-  }
-
-  onDescriptionChange(index: any): void {
-    let descArr = [];
-    let desc: Description =
-    {
-      description : this.products[index].description
-    };
-    if(descArr.length ==0){
-      descArr.push(desc);
-      this.dataDescChange.emit(descArr);
-
-    }
-     
-  }
+  }  
 
 }
 

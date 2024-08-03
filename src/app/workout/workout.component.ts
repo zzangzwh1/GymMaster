@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup,Validators  } from '@angular/forms';
 import { combineLatest } from 'rxjs';
 import { startWith } from 'rxjs/operators';
-import { WorkoutData } from '../interfaces/interface';
+import { WorkoutData,WorkoutInfo } from '../interfaces/interface';
 
 @Component({
   selector: 'app-workout',
@@ -21,8 +21,10 @@ export class WorkoutComponent implements OnInit {
     selectdate: '',
     selectExerciseDescription: ''
   };
-  public productCount :any[] =[]; 
-
+  private productCount :any[] =[]; 
+  private productDesc : any[] = [];
+  private rowChanges : WorkoutInfo[] = [];
+  private rowTotals = [];
   constructor(
     private fb: FormBuilder
   ) {
@@ -85,15 +87,8 @@ export class WorkoutComponent implements OnInit {
     console.log('TEST--------',products);
     this.productCount= products;
 
-   // console.log('Products updated:', products);
+  } 
 
-    // Process the data as needed
-    // For example, you could store it in a property or perform some actions
-    // this.updatedProducts = products;
-  }
- public descChange(products : any[]) :void{
-    console.log('TEST2',products);
-  }
  public UploadExercise():void{
   console.log('Test');
   console.log(this.productCount);
@@ -105,6 +100,7 @@ export class WorkoutComponent implements OnInit {
     console.log('Date:', this.form.get('date')?.value);
     console.log('Time:', this.form.get('time')?.value);
     console.log('current Product Count : ',this.productCount);
+    
     // Add your upload logic here
   } else {
     console.log('Form is invalid.');

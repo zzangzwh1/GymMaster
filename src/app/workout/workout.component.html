@@ -44,8 +44,7 @@
 
  <div class="containerTable" [ngStyle]="{'display': displayTable}">
   <!-- Parent Component Template -->
-  <app-table (dataCountChange)="countChange($event)"
-            (dataDescChange)="descChange($event)"></app-table>
+  <app-table (dataChange)="countChange($event)"/>
 </div>
 
 <div class="containerTable" [ngStyle]="{'display': displayTable}">
