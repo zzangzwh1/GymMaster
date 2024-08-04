@@ -1,5 +1,5 @@
 import { Component, OnInit ,EventEmitter, Output, output } from '@angular/core';
-import { Description, RepCount ,WorkoutInfo} from '../../interfaces/interface';
+import { WorkoutInfo} from '../../interfaces/interface';
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',

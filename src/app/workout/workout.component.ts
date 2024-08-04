@@ -1,8 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup,Validators  } from '@angular/forms';
-import { combineLatest } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { startWith } from 'rxjs/operators';
-import { WorkoutData,WorkoutInfo } from '../interfaces/interface';
+import { WorkoutData,WorkoutInfo, WorkoutSet } from '../interfaces/interface';
+import { AuthService } from '../Service/auth.service';
 
 @Component({
   selector: 'app-workout',
@@ -25,8 +26,9 @@ export class WorkoutComponent implements OnInit {
   private productDesc : any[] = [];
   private rowChanges : WorkoutInfo[] = [];
   private rowTotals = [];
+  private memberId :string= '';
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder, private auth : AuthService
   ) {
     this.form = this.fb.group({
       exercise: ['', Validators.required], 
@@ -36,6 +38,9 @@ export class WorkoutComponent implements OnInit {
   }
 
   ngOnInit(): void {
+   if(sessionStorage.getItem('userId') !==null){
+
+  
     const exerciseControl = this.form.get('exercise');
     const dateControl = this.form.get('date');
     const timeControl = this.form.get('time'); 
@@ -53,14 +58,15 @@ export class WorkoutComponent implements OnInit {
         this.parentWorkoutData.selectPart = selectedExercise;
         this.parentWorkoutData.selectTime = selectedTime;
         this.parentWorkoutData.selectdate = selectedDate;
-        console.log(selectedExercise);
-        console.log(selectedTime);
-        console.log(selectedDate);
        
         // Handle the display logic
         this.display = selectedExercise ? '' : 'none';
       });
     }
+  }
+  else{
+    alert('You Must Login If you want to log your daily work out!');
+  }
   }
 
   currentInputValue(): string {
@@ -94,6 +100,29 @@ export class WorkoutComponent implements OnInit {
   console.log(this.productCount);
  
   if (this.form.valid) {
+
+   // let memberId :Observable<string> | null = null;
+    const userId = sessionStorage.getItem('userId');  
+    if (userId) {
+      // Call the service method to get the member ID
+      this.auth.getMemberIdByUserID(userId).subscribe(
+        (data: string) => {
+          this.memberId = data; 
+          console.log('Current Member ID : ',this.memberId);
+        },
+        (error) => {
+          console.error('Error fetching member ID:', error);
+        }
+      );
+    } else {
+      console.warn('User ID is not found in session storage.');
+    }
+    
+  
+  
+    /*
+    console.log('Current MebmberID : ',memberId)
+   
     
     console.log('Form is valid. Proceeding with upload.------------------');
     console.log('Selected Exercise:', this.form.get('exercise')?.value);
@@ -102,8 +131,10 @@ export class WorkoutComponent implements OnInit {
     console.log('current Product Count : ',this.productCount);
     
     // Add your upload logic here
+    */
   } else {
     console.log('Form is invalid.');
   }
+ 
   }
 }

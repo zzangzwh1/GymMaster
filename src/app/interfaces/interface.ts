@@ -16,18 +16,17 @@ export interface Login{
     selectExerciseDescription? :string
   }
 
-  export interface RepCount {
-    setCount: number;
-    repCount: number;
-   
-  }
-  export interface Description {
-    description: string;
- 
-   
-  }
   export interface WorkoutInfo{
     setCount: number;
     repCount: number;
     description: string;
+  }
+  export interface WorkoutSet{
+    memberId : number,
+    part : string,
+    setCount : number,
+    setDescruption :string,
+    createDate :Date,
+    expireDate : Date,
+    lastModifiedDate :Date
   }

@@ -20,10 +20,10 @@ export class AuthService {
     return this.loggedIn.asObservable();
   }
 
-  checkUserExists(userId: string): Observable<boolean> {
+  public checkUserExists(userId: string): Observable<boolean> {
     return this.http.get<boolean>(`${this.dotnetMemberUrl}/userId?userId=${userId}`);
   }
-  login(loginInfo: any): Observable<AuthResponse> {
+  public login(loginInfo: any): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.dotnetMemberUrl}/authenticate`, loginInfo, { withCredentials: true })
       .pipe(
         tap(response => {
@@ -36,20 +36,21 @@ export class AuthService {
   }
 
 
-  register(userInfo: any): Observable<any> {
+  public register(userInfo: any): Observable<any> {
     return this.http.post(`${this.dotnetMemberUrl}/register`, userInfo);
   }
 
-  logout(): void {
+  public logout(): void {
     sessionStorage.removeItem('userId');
     this.loggedIn.next(false);
   }
 
-  checkLoginStatus(): void {
+  public checkLoginStatus(): void {
     const userId = sessionStorage.getItem('userId');
     this.loggedIn.next(userId !== null);
   }
-  getUserNameByUserId(){
-    
+  public getMemberIdByUserID(memberId: string):Observable<any> { 
+    return this.http.get<any>(`${this.dotnetMemberUrl}/memberId?memberId=${memberId}`);
   }
+  
 }
