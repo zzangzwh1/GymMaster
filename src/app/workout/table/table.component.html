@@ -5,6 +5,7 @@
       <tr>
         <th>SET</th>
         <th>REPS</th>
+        <th>Weight(LB)</th>
         <th>Description</th>
       </tr>
     </ng-template>
@@ -18,6 +19,14 @@
           <input 
             type="number" 
             [(ngModel)]="products[i].repCount" 
+            (change)="onRepCountChange(i)" 
+            min="0"
+          />
+        </td>
+        <td style="text-align: center;">
+          <input 
+            type="number" 
+            [(ngModel)]="products[i].weight" 
             (change)="onRepCountChange(i)" 
             min="0"
           />

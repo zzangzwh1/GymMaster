@@ -22,6 +22,7 @@ import { TableComponent } from './workout/table/table.component';
 import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';;
 import { CardModule } from 'primeng/card';
+import { MyChartComponent } from './home/my-chart/my-chart.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,9 @@ import { CardModule } from 'primeng/card';
     HomeComponent,
     SignupComponent,
     WorkoutComponent,
-    TableComponent
+    TableComponent,
+    MyChartComponent
+
   ],
   imports: [
     BrowserModule,
@@ -49,6 +52,8 @@ import { CardModule } from 'primeng/card';
     TableModule, 
     CommonModule,
     CardModule
+   
+  
   ],
   providers: [
     provideAnimationsAsync()

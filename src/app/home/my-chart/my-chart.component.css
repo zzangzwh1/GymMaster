@@ -1,0 +1,12 @@
+.donutCanvas{
+    margin: 0;
+    width: 400px;
+    height: 400px;
+    text-align: center;
+   
+}
+.barCanvas{
+    width: 500px;
+    height: 500px;
+    text-align: center;
+}

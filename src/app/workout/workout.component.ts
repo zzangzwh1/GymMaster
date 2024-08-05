@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup,Validators  } from '@angular/forms';
 import { combineLatest, Observable } from 'rxjs';
 import { startWith } from 'rxjs/operators';
-import { WorkoutData,WorkoutInfo, WorkoutSet } from '../interfaces/interface';
+import { WorkoutData, WorkoutInfo, WorkoutSet } from '../interfaces/interface';
 import { AuthService } from '../Service/auth.service';
 import { Workout } from '../Service/workout.service';
 import { Router } from '@angular/router';
@@ -124,6 +124,7 @@ export class WorkoutComponent implements OnInit {
         CreationDate: dateOnly, 
         repCount: product.repCount,
         setCount: product.setCount,
+        weight :product.weight,
         SetDescription: product.description
       };
   
@@ -132,7 +133,7 @@ export class WorkoutComponent implements OnInit {
     });
   
     alert('Workout Successfully Updated!');
-    this.router.navigate(['/Workout']);
+    window.location.reload();
   }
   
   private formatDate(dateValue: any): Date {

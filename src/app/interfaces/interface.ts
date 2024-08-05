@@ -8,17 +8,16 @@ export interface Login{
     success: boolean;
     message?: string;
   }
-
   export interface WorkoutData{
     selectPart? : string,
     selectdate? : string,
     selectTime? : string,
     selectExerciseDescription? :string
   }
-
   export interface WorkoutInfo{
     setCount: number;
     repCount: number;
+    weight : number,
     description: string;
   }
   export interface WorkoutSet{
@@ -26,7 +25,7 @@ export interface Login{
     part : string,
     setCount : number,
     repCount :number,
+    weight :number,
     SetDescription :string,
-    CreationDate: Date  //
-
+    CreationDate: Date  
   }
