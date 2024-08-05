@@ -4,7 +4,8 @@ import { combineLatest, Observable } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 import { WorkoutData,WorkoutInfo, WorkoutSet } from '../interfaces/interface';
 import { AuthService } from '../Service/auth.service';
-
+import { Workout } from '../Service/workout.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-workout',
   templateUrl: './workout.component.html',
@@ -28,7 +29,7 @@ export class WorkoutComponent implements OnInit {
   private rowTotals = [];
   private memberId :string= '';
   constructor(
-    private fb: FormBuilder, private auth : AuthService
+    private fb: FormBuilder, private auth : AuthService , private works : Workout, private router :Router
   ) {
     this.form = this.fb.group({
       exercise: ['', Validators.required], 
@@ -75,66 +76,70 @@ export class WorkoutComponent implements OnInit {
       return '';
     }
     else{
-      this.displayTable = this.currentExercise.trim().length > 0 ? 'block' : 'none';
-      // Assign currentExercise to selectExerciseDescription
+      this.displayTable = this.currentExercise.trim().length > 0 ? 'block' : 'none';    
       this.parentWorkoutData.selectExerciseDescription = this.currentExercise;
   
       console.log(this.currentExercise);
-      return this.currentExercise;
-  
+      return this.currentExercise;  
      
-    }
-    
+    }   
     
   }
-  public countChange(products: any[]): void {
- 
-    console.log(products.length);
-    console.log('TEST--------',products);
+  public countChange(products: any[]): void { 
     this.productCount= products;
 
   } 
 
- public UploadExercise():void{
-  console.log('Test');
-  console.log(this.productCount);
- 
-  if (this.form.valid) {
-
-   // let memberId :Observable<string> | null = null;
-    const userId = sessionStorage.getItem('userId');  
-    if (userId) {
-      // Call the service method to get the member ID
-      this.auth.getMemberIdByUserID(userId).subscribe(
-        (data: string) => {
-          this.memberId = data; 
-          console.log('Current Member ID : ',this.memberId);
-        },
-        (error) => {
-          console.error('Error fetching member ID:', error);
-        }
-      );
-    } else {
-      console.warn('User ID is not found in session storage.');
+  public UploadExercise(): void {
+    if (!this.form.valid) {
+      console.log('Form is invalid.');
+      return;
     }
-    
   
+    const userId = sessionStorage.getItem('userId');
+    if (!userId) {
+      console.warn('User ID is not found in session storage.');
+      return;
+    }
   
-    /*
-    console.log('Current MebmberID : ',memberId)
-   
-    
-    console.log('Form is valid. Proceeding with upload.------------------');
-    console.log('Selected Exercise:', this.form.get('exercise')?.value);
-    console.log('Date:', this.form.get('date')?.value);
-    console.log('Time:', this.form.get('time')?.value);
-    console.log('current Product Count : ',this.productCount);
-    
-    // Add your upload logic here
-    */
-  } else {
-    console.log('Form is invalid.');
+    this.auth.getMemberIdByUserID(userId).subscribe(
+      (memberId: string) => {
+        this.memberId = memberId;
+        console.log('Current Member ID:', this.memberId);
+        this.processWorkoutData();
+      },
+      (error) => {
+        console.error('Error fetching member ID:', error);
+      }
+    );
   }
- 
+  
+  private processWorkoutData(): void {
+    const dateOnly = this.formatDate(this.form.get('date')?.value);
+  
+    this.productCount.forEach((product) => {
+      const workoutInfo: WorkoutSet = {
+        memberId: Number(this.memberId),
+        part: this.form.get('exercise')?.value || '',
+        CreationDate: dateOnly, 
+        repCount: product.repCount,
+        setCount: product.setCount,
+        SetDescription: product.description
+      };
+  
+      console.log('Processing workout info:', workoutInfo);
+      this.works.updateWorkoutSet(workoutInfo);
+    });
+  
+    alert('Workout Successfully Updated!');
+    this.router.navigate(['/Workout']);
+  }
+  
+  private formatDate(dateValue: any): Date {
+    if (!(dateValue instanceof Date)) {
+      console.error('Invalid date value');
+      return new Date(); 
+    }    
+    return dateValue;
   }
 }

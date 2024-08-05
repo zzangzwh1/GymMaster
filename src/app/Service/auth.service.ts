@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import {AuthResponse } from '../interfaces/interface'
+import {AuthResponse, WorkoutSet } from '../interfaces/interface'
 
 @Injectable({
   providedIn: 'root'
@@ -52,5 +52,6 @@ export class AuthService {
   public getMemberIdByUserID(memberId: string):Observable<any> { 
     return this.http.get<any>(`${this.dotnetMemberUrl}/memberId?memberId=${memberId}`);
   }
+
   
 }

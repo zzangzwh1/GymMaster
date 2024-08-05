@@ -25,8 +25,8 @@ export interface Login{
     memberId : number,
     part : string,
     setCount : number,
-    setDescruption :string,
-    createDate :Date,
-    expireDate : Date,
-    lastModifiedDate :Date
+    repCount :number,
+    SetDescription :string,
+    CreationDate: Date  //
+
   }
