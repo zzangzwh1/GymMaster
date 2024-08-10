@@ -1,5 +1,10 @@
 import { Component,OnInit } from '@angular/core';
 import { Chart,registerables } from 'chart.js';
+import { Workout } from '../../Service/workout.service';
+import { GetMemberWorkoutStatus } from '../../class/helpClass';
+import { PartCount } from '../../interfaces/interface';
+import { Observable } from 'rxjs';
+
 Chart.register(...registerables);
 
 @Component({
@@ -8,35 +13,46 @@ Chart.register(...registerables);
   styleUrl: './my-chart.component.css'
 })
 export class MyChartComponent implements OnInit {
-  public datas = {
-    labels: [
-      'Chest',
-      'Back',
-      'Leg',
-      'Shoulder',
-      'Arms'
-    ],
-    datasets: [{
-      label: 'My Monthly Workout Data',
-      data: [200, 5, 1,19,10],
-      backgroundColor: [
-        'rgb(255, 0, 0)',
-        'rgb(0, 255, 0)',
-        'rgb(0, 0, 255)',
-        'rgb(255, 165, 0)',
-         'rgb(128, 0, 128)'
-      ],
-      hoverOffset: 4
-    }]
-  };
-  public configs : any = {
+  
+ 
+  public datas:any; 
+   public configs : any = {
     type: 'doughnut',
-    data: this.datas,
+    data: this.WorkoutStatus(),
   };
   
 
   public labels = ['Jan','FEB','Mar','April','May','June'];
-  public data = {
+  public data :any; 
+
+  public config :any = {
+    type: 'bar',
+    data: this.WorkoutTrack(),
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    },
+  };
+  public chart :any;
+  public charts :any;
+
+  constructor(private work : Workout, private getMemberWorkout:GetMemberWorkoutStatus) {   
+  
+  }
+
+  ngOnInit(): void {
+  //this.data = this.WorkoutTrack();
+  this.chart = new Chart('myChart',this.config);
+  this.charts = new Chart('myChart2',this.configs);
+   
+}
+public  WorkoutTrack() : any{
+  console.log(sessionStorage.getItem('userId'));
+  //let getChestMonthlyValue = 
+  this.data = {
     labels: this.labels,
     datasets: [{
       label: 'My First Dataset',
@@ -62,29 +78,49 @@ export class MyChartComponent implements OnInit {
       borderWidth: 1
     }]
   };
-  // </block:setup>
-  
-  // <block:config:0>
-  public config :any = {
-    type: 'bar',
-    data: this.data,
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true
-        }
-      }
-    },
-  };
-  public chart :any;
-  public charts :any;
+  return this.data;
 
-  ngOnInit(): void {
-  this.chart = new Chart('myChart',this.config);
-    this.charts = new Chart('myChart2',this.configs);
- 
-  
 }
+public WorkoutStatus() :any{
+  const userId = sessionStorage.getItem('userId');
+  this.getMemberWorkout = new GetMemberWorkoutStatus();
+  this.getMemberWorkout.part = ['Chest', 'Back', 'Leg', 'Shoulder', 'Arms'];
+  if (userId !== null) {
+    this.getMemberWorkout.userId = userId;
+    let monthlyMemberWorkoutStatus :Observable< PartCount[]> = this.work.getMemberWorkoutStatus(userId);
+  
+    
+    console.log('TEST---',monthlyMemberWorkoutStatus);
+
+    this.datas = {
+      labels: [
+        'Chest',
+        'Back',
+        'Leg',
+        'Shoulder',
+        'Arms'
+      ],
+      datasets: [{
+        label: 'My Monthly Workout Data',
+        data: [10,15,25,39,45],
+        backgroundColor: [
+          'rgb(255, 0, 0)',
+          'rgb(0, 255, 0)',
+          'rgb(0, 0, 255)',
+          'rgb(255, 165, 0)',
+          'rgb(128, 0, 128)'
+        ],
+        hoverOffset: 4
+      }]
+    };
+  }
+  console.log(this.getMemberWorkout);
+  
+ 
+   return this.datas
+}
+
+
 
 
 }

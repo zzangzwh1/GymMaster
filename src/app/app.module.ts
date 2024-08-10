@@ -23,6 +23,7 @@ import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';;
 import { CardModule } from 'primeng/card';
 import { MyChartComponent } from './home/my-chart/my-chart.component';
+import { GetMemberWorkoutStatus } from './class/helpClass';
 
 @NgModule({
   declarations: [
@@ -52,11 +53,13 @@ import { MyChartComponent } from './home/my-chart/my-chart.component';
     TableModule, 
     CommonModule,
     CardModule
+
+    
    
   
   ],
   providers: [
-    provideAnimationsAsync()
+    provideAnimationsAsync(),GetMemberWorkoutStatus
   ],
   bootstrap: [AppComponent]
 })

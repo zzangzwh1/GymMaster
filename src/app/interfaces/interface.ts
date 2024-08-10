@@ -29,3 +29,11 @@ export interface Login{
     SetDescription :string,
     CreationDate: Date  
   }
+
+export interface PartCount {
+  part: string;
+  totalCount: number;
+}
+
+
+
