@@ -34,6 +34,11 @@ export interface PartCount {
   part: string;
   totalCount: number;
 }
+export interface YearCount {
+  year: number;
+  yearCount: number;
+}
+
 
 
 

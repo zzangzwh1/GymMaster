@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import {AuthResponse, WorkoutSet,PartCount } from '../interfaces/interface'
+import {AuthResponse, WorkoutSet,PartCount, YearCount } from '../interfaces/interface'
 import { GetMemberWorkoutStatus } from '../class/helpClass';
 
 
@@ -29,8 +29,12 @@ export class Workout {
     }
     public getMemberWorkoutStatus(userId:string) :Observable<PartCount[]>
     {
-      return this.http.get<PartCount[]>(`${this.dotnetWorkoutSetrUrl}/userId?userId=${userId}`);    
-   
+      return this.http.get<PartCount[]>(`${this.dotnetWorkoutSetrUrl}/userId?userId=${userId}`);       
+
+    }
+    public getAnnualWorkoutStatus(userId:string) :Observable<YearCount[]> 
+    {
+      return this.http.get<YearCount[]>(`${this.dotnetWorkoutSetrUrl}/id?id=${userId}`);       
 
     }
     
