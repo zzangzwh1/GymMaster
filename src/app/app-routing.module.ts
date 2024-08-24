@@ -4,11 +4,14 @@ import { AuthenticationComponent } from './authentication/authentication.compone
 import { HomeComponent } from './home/home.component';
 import { SignupComponent } from './authentication/signup/signup.component';
 import { WorkoutComponent } from './workout/workout.component';
+import { ShareComponent } from './share/share.component';
+
 
 const routes: Routes = [{path:'Authentication',component:AuthenticationComponent},
   {path:'Home',component:HomeComponent},
   {path:'Authentication/signup',component:SignupComponent},
-  {path:'Workout',component:WorkoutComponent}
+  {path:'Workout',component:WorkoutComponent},
+  {path:'share',component:ShareComponent}
 ];
 
 @NgModule({

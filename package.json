@@ -24,6 +24,7 @@
     "chart.js": "^4.4.3",
     "ng2-charts": "^6.0.1",
     "ngx-material-timepicker": "^13.1.1",
+    "primeicons": "^7.0.0",
     "primeng": "^17.18.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

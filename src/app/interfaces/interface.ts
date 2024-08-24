@@ -38,6 +38,10 @@ export interface YearCount {
   year: number;
   yearCount: number;
 }
+export interface UploadEvent {
+  originalEvent: Event;
+  files: File[];
+}
 
 
 

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule,CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -24,6 +24,12 @@ import { CommonModule } from '@angular/common';;
 import { CardModule } from 'primeng/card';
 import { MyChartComponent } from './home/my-chart/my-chart.component';
 import { GetMemberWorkoutStatus } from './class/helpClass';
+import { ShareComponent } from './share/share.component';
+import { FileUploadModule } from 'primeng/fileupload';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+
+
 
 @NgModule({
   declarations: [
@@ -34,7 +40,8 @@ import { GetMemberWorkoutStatus } from './class/helpClass';
     SignupComponent,
     WorkoutComponent,
     TableComponent,
-    MyChartComponent
+    MyChartComponent,
+    ShareComponent
 
   ],
   imports: [
@@ -52,15 +59,17 @@ import { GetMemberWorkoutStatus } from './class/helpClass';
     BrowserAnimationsModule,
     TableModule, 
     CommonModule,
-    CardModule
+    CardModule,
+    FileUploadModule,
+    ToastModule
 
-    
    
   
   ],
   providers: [
-    provideAnimationsAsync(),GetMemberWorkoutStatus
+    provideAnimationsAsync(),GetMemberWorkoutStatus,MessageService
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],  // Add this line
   bootstrap: [AppComponent]
 })
 export class AppModule { }
