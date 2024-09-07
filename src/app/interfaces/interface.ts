@@ -42,6 +42,10 @@ export interface UploadEvent {
   originalEvent: Event;
   files: File[];
 }
+export interface UploadImage{
+  memberId :number,
+  formData :FormData | null
+}
 
 
 
