@@ -116,6 +116,7 @@ export class WorkoutComponent implements OnInit {
   
   private processWorkoutData(): void {
     const dateOnly = this.formatDate(this.form.get('date')?.value);
+    
   
     this.productCount.forEach((product) => {
       const workoutInfo: WorkoutSet = {

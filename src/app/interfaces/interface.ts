@@ -46,6 +46,15 @@ export interface UploadImage{
   memberId :number,
   formData :FormData | null
 }
+export interface ShareBoardImages{
+  shareBoardId: number;
+  memberId: number;
+  profileImage: string; // This should be a base64 string including the MIME type
+  likeImage?: number;
+  creationDate: string;
+  expirationDate: string;
+  lastModified: string;
+}
 
 
 

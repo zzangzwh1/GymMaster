@@ -23,7 +23,7 @@ export class HomeComponent implements OnInit {
   
 
   
-  private dotnetMemberUrl = 'https://localhost:7298/api/ImageUpload/upload';
+  private dotnetMemberUrl = 'https://localhost:7298/api/Image/upload';
   constructor(
     private titleService: Title,private messageService: MessageService,private http: HttpClient,private auth: AuthService
   ) { 
@@ -51,7 +51,7 @@ export class HomeComponent implements OnInit {
     this.selectedFile = event.files[0];  // Capture the selected file
     console.log(this.selectedFile);
   }
-  public onUpload(event: UploadEvent) {
+  public onUpload() {
     if (this.selectedFile && this.currentMeberId !== '') {
       const formData = new FormData();
       formData.append('image', this.selectedFile, this.selectedFile.name);

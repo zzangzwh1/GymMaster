@@ -28,6 +28,7 @@ import { ShareComponent } from './share/share.component';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { GetMemberImageComponent } from './home/get-member-image/get-member-image.component';
 
 
 
@@ -41,7 +42,8 @@ import { MessageService } from 'primeng/api';
     WorkoutComponent,
     TableComponent,
     MyChartComponent,
-    ShareComponent
+    ShareComponent,
+    GetMemberImageComponent
 
   ],
   imports: [

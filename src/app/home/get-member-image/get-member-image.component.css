@@ -1,0 +1,25 @@
+.container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center;     /* Center vertically */
+       
+  }
+  
+.card {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border: 2px solid black;
+  
+  
+   }
+   
+   .shadow {
+    box-shadow: inset 0 -3em 3em rgba(196, 76, 76, 0.1),
+                0 0  0 2px rgb(190, 190, 190),
+                0.3em 0.3em 1em rgba(0,0,0,0.3);
+   }
+   
+.images{
+    text-align: center;
+}
