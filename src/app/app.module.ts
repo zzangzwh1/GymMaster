@@ -28,8 +28,6 @@ import { ShareComponent } from './share/share.component';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { GetMemberImageComponent } from './home/get-member-image/get-member-image.component';
-
 
 
 @NgModule({
@@ -42,8 +40,7 @@ import { GetMemberImageComponent } from './home/get-member-image/get-member-imag
     WorkoutComponent,
     TableComponent,
     MyChartComponent,
-    ShareComponent,
-    GetMemberImageComponent
+    ShareComponent
 
   ],
   imports: [

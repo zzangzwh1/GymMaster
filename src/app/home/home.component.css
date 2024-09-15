@@ -2,3 +2,6 @@
     align-items: center;
     text-align: center;
 }
+.card{
+   border: none;
+}
