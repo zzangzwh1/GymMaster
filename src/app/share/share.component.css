@@ -31,3 +31,7 @@
   align-items: center;
   display: grid;
 }
+.likeText{
+    font-size: 10px;
+    color:red;
+}

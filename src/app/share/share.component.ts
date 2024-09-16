@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { ShareBoardImages } from '../interfaces/interface';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { ImageLike } from '../interfaces/interface';
 
 
 
@@ -20,7 +21,13 @@ export class ShareComponent implements OnInit {
   public memberImages : ShareBoardImages[] = [];
   public imageUrls: string[] = []; 
   public test: number =0;  
+  public likes: ImageLike = {
+    ShareBoardId :0,
+    MemberId :0,
+    Like :0
 
+  };
+  public liked = false;
   constructor(private auth: AuthService,private image : GetImage,private titleService: Title,private router : Router) {
 
    
@@ -88,7 +95,24 @@ export class ShareComponent implements OnInit {
   private handleError(message: string, error: any): void {
     console.error(message, error);
   }
-  public likeImage(image: ShareBoardImages): void {
+  public likeImage(image: ShareBoardImages,index:number): void {
+    console.log(index);
+    if (this.memberImages[index].likeImage) {
+      this.memberImages[index].likeImage = false; // Toggle to false\
+      console.log(this.memberImages[index].likeImage);
+    } else {
+      this.memberImages[index].likeImage = true;  // Toggle to true
+      this.likes.Like =1;
+      this.likes.MemberId = image.memberId;
+      this.likes.ShareBoardId = image.shareBoardId;
+
+    
+
+      
+
+    }
+    //this.memberImages[index].likeImage = !this.memberImages[index].likeImage;
+    
     console.log(image);
     console.log('Like Clicked!');
   }

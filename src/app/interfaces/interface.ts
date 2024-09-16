@@ -50,10 +50,16 @@ export interface ShareBoardImages{
   shareBoardId: number;
   memberId: number;
   profileImage: string; // This should be a base64 string including the MIME type
-  likeImage?: number;
+  likeImage?: boolean;
   creationDate: string;
   expirationDate: string;
   lastModified: string;
+}
+export interface ImageLike{
+  ShareBoardId: number;
+  MemberId: number;
+  Like: number; 
+
 }
 
 
