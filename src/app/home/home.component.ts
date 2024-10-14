@@ -30,7 +30,7 @@ export class HomeComponent implements OnInit {
     titleService.setTitle('Home');
   }
   ngOnInit(): void {
-    const currentUser = sessionStorage.getItem('userId');
+//    const currentUser = sessionStorage.getItem('userId');
 
       console.log('Test');
     
@@ -48,7 +48,7 @@ export class HomeComponent implements OnInit {
         console.error('Error fetching member ID:', error);
       }
     );
-    this.selectedFile = event.files[0];  // Capture the selected file
+    this.selectedFile = event.files[0]; 
     console.log(this.selectedFile);
   }
   public onUpload() {
@@ -57,13 +57,12 @@ export class HomeComponent implements OnInit {
       formData.append('image', this.selectedFile, this.selectedFile.name);
       formData.append('memberId', this.currentMeberId.toString());
   
-      // Specify responseType: 'text' to handle plain text response
+     
       this.http.post(this.dotnetMemberUrl, formData, { responseType: 'text' }).subscribe({
         next: (response : any) => {
-          // Since response is plain text, it will be handled as a string
-          this.messageService.add({ severity: 'info', summary: 'Success', detail: response });
-  
-          // Optional: Log the response
+        
+          this.messageService.add({ severity: 'info', summary: 'Success', detail: response }); 
+        
           console.log('Response:', response);
         },
         error: (err) => {

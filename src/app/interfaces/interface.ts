@@ -9,10 +9,9 @@ export interface Login{
     message?: string;
   }
   export interface WorkoutData{
-    selectPart? : string,
-    selectdate? : string,
-    selectTime? : string,
-    selectExerciseDescription? :string
+    selectPart : string,
+    selectdate : string,
+    selectExerciseDescription :string
   }
   export interface WorkoutInfo{
     setCount: number;
@@ -20,15 +19,17 @@ export interface Login{
     weight : number,
     description: string;
   }
-  export interface WorkoutSet{
-    memberId : number,
-    part : string,
-    setCount : number,
-    repCount :number,
-    weight :number,
-    SetDescription :string,
-    CreationDate: Date  
-  }
+  export interface WorkoutSetDTO {
+    CreationDate: string; // Change type to string
+    ExpirationDate: string; // Change type to string
+    LastModified: string; // Change type to string
+    MemberId: number;
+    Part: string;
+    RepCount: number;
+    SetCount: number;
+    Weight: number;
+    SetDescription: string;
+}
 
 export interface PartCount {
   part: string;

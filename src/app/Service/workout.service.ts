@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import {AuthResponse, WorkoutSet,PartCount, YearCount } from '../interfaces/interface'
+import { BehaviorSubject, Observable ,throwError } from 'rxjs';
+
+import {AuthResponse, WorkoutSetDTO,PartCount, YearCount } from '../interfaces/interface'
 import { GetMemberWorkoutStatus } from '../class/helpClass';
+import { catchError, tap } from 'rxjs/operators';
 
 
 @Injectable({
@@ -15,18 +16,24 @@ export class Workout {
  
     constructor(private http: HttpClient) { 
     }  
-    public updateWorkoutSet(workoustSet: WorkoutSet) : void{
-        this.http.post(`${this.dotnetWorkoutSetrUrl}/WorkoutSet`, workoustSet).subscribe({
-            next: (response) => {
-              console.log('Update successful:', response);
-              // Handle success
-            },
-            error: (error) => {
-              console.error('Update failed:', error);
-              // Handle error
-            }
-          });
-    }
+    public insertWorkoutSet(workoutInfo: WorkoutSetDTO[]): Observable<WorkoutSetDTO[]> {
+      // Return the Observable from the HTTP POST request
+      return this.http.post<WorkoutSetDTO[]>(`${this.dotnetWorkoutSetrUrl}/insertWorkout`, workoutInfo).pipe(
+          tap(response => {
+              console.log('Insert successful:', response);
+              // Handle any additional success logic here if needed
+          }),
+          catchError(error => {
+              console.error('Insert failed:', error);
+              if (error.error && error.error.errors) {
+                  console.error('Validation errors:', error.error.errors); // Log validation errors
+              }
+              // Throw the error to be handled by the caller
+              return throwError(error);
+          })
+      );
+  }
+    
     public getMemberWorkoutStatus(userId:string) :Observable<PartCount[]>
     {
       return this.http.get<PartCount[]>(`${this.dotnetWorkoutSetrUrl}/userId?userId=${userId}`);       

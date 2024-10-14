@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup,Validators  } from '@angular/forms';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest, Observable ,} from 'rxjs';
 import { startWith } from 'rxjs/operators';
-import { WorkoutData, WorkoutInfo, WorkoutSet } from '../interfaces/interface';
+import { WorkoutData, WorkoutInfo, WorkoutSetDTO } from '../interfaces/interface';
 import { AuthService } from '../Service/auth.service';
 import { Workout } from '../Service/workout.service';
 import { Router } from '@angular/router';
@@ -18,8 +18,7 @@ export class WorkoutComponent implements OnInit {
   public displayTable: string = 'none';
   public currentExercise: string = '';
   public parentWorkoutData: WorkoutData = {
-    selectPart: '',
-    selectTime: '',
+    selectPart: '',   
     selectdate: '',
     selectExerciseDescription: ''
   };
@@ -27,6 +26,20 @@ export class WorkoutComponent implements OnInit {
   private productDesc : any[] = [];
   private rowChanges : WorkoutInfo[] = [];
   private rowTotals = [];
+  private WorkoutData : WorkoutSetDTO ={
+    MemberId : 0,
+    Part :'',
+   SetCount :0,
+   RepCount :0,
+   Weight :0,
+    SetDescription : '',
+    CreationDate : '',
+    ExpirationDate: '',
+    LastModified : '' 
+  }
+  private workoutDataList: WorkoutSetDTO[] = [];
+
+  
   private memberId :string= '';
   constructor(
     private fb: FormBuilder, private auth : AuthService , private works : Workout, private router :Router
@@ -44,20 +57,19 @@ export class WorkoutComponent implements OnInit {
   
     const exerciseControl = this.form.get('exercise');
     const dateControl = this.form.get('date');
-    const timeControl = this.form.get('time'); 
 
-    if (exerciseControl && dateControl && timeControl) {
+
+    if (exerciseControl && dateControl) {
       const initialExerciseValue = exerciseControl.value;
       const initialDateValue = dateControl.value;
-      const initialTimeValue = timeControl.value;
+
 
       combineLatest([
         exerciseControl.valueChanges.pipe(startWith(initialExerciseValue)),
-        dateControl.valueChanges.pipe(startWith(initialDateValue)),
-        timeControl.valueChanges.pipe(startWith(initialTimeValue))
-      ]).subscribe(([selectedExercise, selectedDate, selectedTime]) => {
-        this.parentWorkoutData.selectPart = selectedExercise;
-        this.parentWorkoutData.selectTime = selectedTime;
+        dateControl.valueChanges.pipe(startWith(initialDateValue))
+    
+      ]).subscribe(([selectedExercise, selectedDate]) => {
+        this.parentWorkoutData.selectPart = selectedExercise;      
         this.parentWorkoutData.selectdate = selectedDate;
        
         // Handle the display logic
@@ -71,8 +83,8 @@ export class WorkoutComponent implements OnInit {
   }
 
   currentInputValue(): string {
-    if(this.form.get('date')?.value === '' ||this.form.get('time')?.value === ''){
-      alert('Please Select Date and Time');
+    if(this.form.get('date')?.value === ''){
+      alert('Please Select Date  ');
       return '';
     }
     else{
@@ -85,12 +97,18 @@ export class WorkoutComponent implements OnInit {
     }   
     
   }
+  public getCurrentDateWithoutTime(): Date {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  }
   public countChange(products: any[]): void { 
+    console.log('~~@fsefs',products);
     this.productCount= products;
 
   } 
 
   public UploadExercise(): void {
+
     if (!this.form.valid) {
       console.log('Form is invalid.');
       return;
@@ -104,44 +122,65 @@ export class WorkoutComponent implements OnInit {
   
     this.auth.getMemberIdByUserID(userId).subscribe(
       (memberId: string) => {
-        this.memberId = memberId;
-        console.log('Current Member ID:', this.memberId);
-        this.processWorkoutData();
+          // Ensure workoutDataList is initialized as an empty array
+          this.workoutDataList = [];
+  
+          console.log('TEST~~');
+          for (let i = 0; i < this.productCount.length; i++) {
+            const workoutSet: WorkoutSetDTO = {
+              MemberId: Number(memberId), // Ensure memberId is converted to a number
+              Part: this.parentWorkoutData.selectPart || '',
+              SetCount: this.productCount[i].setCount,
+              RepCount: this.productCount[i].repCount,
+              Weight: this.productCount[i].weight,
+              SetDescription: this.productCount[i].description,
+              CreationDate: this.parentWorkoutData.selectdate, // This is a string now
+              ExpirationDate: this.formatDate(new Date(2099, 10, 31)), // This is a string now
+              LastModified: this.parentWorkoutData.selectdate // This is a string now
+          };
+  
+              this.workoutDataList.push(workoutSet);
+            }
+            this.insertWorkoutData(this.workoutDataList);
       },
       (error) => {
-        console.error('Error fetching member ID:', error);
+          console.error('Error fetching member ID:', error);
       }
-    );
+  );
   }
-  
-  private processWorkoutData(): void {
-    const dateOnly = this.formatDate(this.form.get('date')?.value);
+  private formatDate(date: Date): string {
+    return date.toISOString().split('T')[0]; // This gives YYYY-MM-DD format
+}
+
+
+
+  public insertWorkoutData(workoutSet: WorkoutSetDTO[]): void {
+    // Log the workoutSet to see what data is being sent
+    console.log('WorkoutSet data to be inserted:', workoutSet);
     
-  
-    this.productCount.forEach((product) => {
-      const workoutInfo: WorkoutSet = {
-        memberId: Number(this.memberId),
-        part: this.form.get('exercise')?.value || '',
-        CreationDate: dateOnly, 
-        repCount: product.repCount,
-        setCount: product.setCount,
-        weight :product.weight,
-        SetDescription: product.description
-      };
-  
-      console.log('Processing workout info:', workoutInfo);
-      this.works.updateWorkoutSet(workoutInfo);
+    // Call the service method to insert the workout set
+    this.works.insertWorkoutSet(workoutSet).subscribe({
+        next: (response) => {
+            console.log('Insert successful:', response);
+            alert('Workout Successfully Updated!');
+            window.location.reload();
+        },
+        error: (error) => {
+            // Log the complete error response for debugging
+            console.error('Insert failed:', error);
+
+            // Check if error has validation errors and log them
+            if (error.error && error.error.errors) {
+                console.error('Validation errors:', error.error.errors);
+            } else {
+                console.error('An unexpected error occurred:', error.message);
+            }
+
+            // Handle error (e.g., show an error message to the user)
+            // You might want to implement a user-friendly notification system here
+        }
     });
+}
   
-    alert('Workout Successfully Updated!');
-    window.location.reload();
-  }
-  
-  private formatDate(dateValue: any): Date {
-    if (!(dateValue instanceof Date)) {
-      console.error('Invalid date value');
-      return new Date(); 
-    }    
-    return dateValue;
-  }
+
 }
