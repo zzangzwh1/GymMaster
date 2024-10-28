@@ -72,7 +72,7 @@ export class WorkoutComponent implements OnInit {
         this.parentWorkoutData.selectPart = selectedExercise;      
         this.parentWorkoutData.selectdate = selectedDate;
        
-        // Handle the display logic
+     
         this.display = selectedExercise ? '' : 'none';
       });
     }
@@ -122,21 +122,21 @@ export class WorkoutComponent implements OnInit {
   
     this.auth.getMemberIdByUserID(userId).subscribe(
       (memberId: string) => {
-          // Ensure workoutDataList is initialized as an empty array
+          
           this.workoutDataList = [];
   
           console.log('TEST~~');
           for (let i = 0; i < this.productCount.length; i++) {
             const workoutSet: WorkoutSetDTO = {
-              MemberId: Number(memberId), // Ensure memberId is converted to a number
+              MemberId: Number(memberId), 
               Part: this.parentWorkoutData.selectPart || '',
               SetCount: this.productCount[i].setCount,
               RepCount: this.productCount[i].repCount,
               Weight: this.productCount[i].weight,
               SetDescription: this.productCount[i].description,
-              CreationDate: this.parentWorkoutData.selectdate, // This is a string now
-              ExpirationDate: this.formatDate(new Date(2099, 10, 31)), // This is a string now
-              LastModified: this.parentWorkoutData.selectdate // This is a string now
+              CreationDate: this.parentWorkoutData.selectdate,
+              ExpirationDate: this.formatDate(new Date(2099, 10, 31)),
+              LastModified: this.parentWorkoutData.selectdate 
           };
   
               this.workoutDataList.push(workoutSet);
@@ -149,16 +149,16 @@ export class WorkoutComponent implements OnInit {
   );
   }
   private formatDate(date: Date): string {
-    return date.toISOString().split('T')[0]; // This gives YYYY-MM-DD format
+    return date.toISOString().split('T')[0]; 
 }
 
 
 
   public insertWorkoutData(workoutSet: WorkoutSetDTO[]): void {
-    // Log the workoutSet to see what data is being sent
+    
     console.log('WorkoutSet data to be inserted:', workoutSet);
     
-    // Call the service method to insert the workout set
+   
     this.works.insertWorkoutSet(workoutSet).subscribe({
         next: (response) => {
             console.log('Insert successful:', response);
@@ -166,18 +166,16 @@ export class WorkoutComponent implements OnInit {
             window.location.reload();
         },
         error: (error) => {
-            // Log the complete error response for debugging
+           
             console.error('Insert failed:', error);
 
-            // Check if error has validation errors and log them
+
             if (error.error && error.error.errors) {
                 console.error('Validation errors:', error.error.errors);
             } else {
                 console.error('An unexpected error occurred:', error.message);
             }
 
-            // Handle error (e.g., show an error message to the user)
-            // You might want to implement a user-friendly notification system here
         }
     });
 }
