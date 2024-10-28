@@ -125,7 +125,6 @@ export class WorkoutComponent implements OnInit {
           
           this.workoutDataList = [];
   
-          console.log('TEST~~');
           for (let i = 0; i < this.productCount.length; i++) {
             const workoutSet: WorkoutSetDTO = {
               MemberId: Number(memberId), 

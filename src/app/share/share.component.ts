@@ -21,21 +21,20 @@ export class ShareComponent implements OnInit {
   public memberImages : ShareBoardImages[] = [];
   public imageUrls: string[] = []; 
   public test: number =0;  
-  public likes: ImageLike = {
+  public addLike : ImageLike ={
     ShareBoardId :0,
-    MemberId :0,
-    Like :0
+    MemberId : 0,
+    ImageLike :0
 
-  };
+  }
   public liked = false;
   constructor(private auth: AuthService,private image : GetImage,private titleService: Title,private router : Router) {
-
    
-  }
-  
 
-  ngOnInit(): void {
-  
+  }  
+
+
+  ngOnInit(): void {  
     if(this.router.url.includes('Home'))
     {
       const memberId: string = sessionStorage.getItem('userId') || '';
@@ -54,14 +53,13 @@ export class ShareComponent implements OnInit {
       (images: ShareBoardImages[] | undefined) => {
         if (!images || images.length === 0) {
           console.log('No images found for this member.');
-          this.memberImages = []; // Set to an empty array if no images are found
-        } else {
-          console.log('TEST', images);
+          this.memberImages = [];
+        } else {         
           this.memberImages = images;
           console.log('TEST---TEST',this.memberImages);
         }
       },
-      (error) => this.handleError('Error fetching images', error) // Correctly placed error callback
+      (error) => this.handleError('Error fetching images', error) 
     );
   }
   private loadCurrentMemberImages(memberId: string): void {
@@ -72,15 +70,12 @@ export class ShareComponent implements OnInit {
   
         this.image.getMemberImage(Number(fetchedMemberId)).subscribe(
           (images: ShareBoardImages[] | undefined) => {
-            if (!images || images.length === 0) {
-        
+            if (!images || images.length === 0) {        
               console.log('No images found for this member.');
-              this.memberImages = []; // Set to an empty array if no images are found
-           
+              this.memberImages = [];            
             } else {
               console.log('TEST',images);
-              this.memberImages = images;
-            
+              this.memberImages = images;           
            
             }
           },
@@ -96,26 +91,40 @@ export class ShareComponent implements OnInit {
     console.error(message, error);
   }
   public likeImage(image: ShareBoardImages,index:number): void {
-    console.log(index);
+    this.addLike.MemberId = image.memberId;
+    this.addLike.ShareBoardId = image.shareBoardId;
     if (this.memberImages[index].likeImage) {
-      this.memberImages[index].likeImage = false; // Toggle to false\
-      console.log(this.memberImages[index].likeImage);
+      this.memberImages[index].likeImage = false; 
+      this.addLike.ImageLike = 0;
+      this.image.uploadImageLike(this.addLike).subscribe({
+        next: (response) => {         
+            console.log('Image uploaded successfully!', response);
+        },
+        error: (error) => {          
+            console.error('Image like upload failed:', error);
+            alert('Image like upload failed');
+        },
+        complete: () => {
+            console.log('Image like upload completed');
+        }
+    });      
     } else {
-      this.memberImages[index].likeImage = true;  // Toggle to true
-      this.likes.Like =1;
-      this.likes.MemberId = image.memberId;
-      this.likes.ShareBoardId = image.shareBoardId;
-
-    
-
-      
-
-    }
-    //this.memberImages[index].likeImage = !this.memberImages[index].likeImage;
-    
-    console.log(image);
-    console.log('Like Clicked!');
-  }
+      this.addLike.ImageLike = 1;
+      this.memberImages[index].likeImage = true;  
+      this.image.uploadImageLike(this.addLike).subscribe({
+        next: (response) => {
+            console.log('Image uploaded successfully!', response);             
+        },
+        error: (error) => {
+            console.error('Image like upload failed:', error);
+            alert('Image like upload failed');
+        },
+        complete: () => {
+            console.log('Image like upload completed');
+        }
+    });
+    }   
+  } 
   
 }
 

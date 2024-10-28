@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { ShareBoardImages } from '../interfaces/interface';
+import {ShareBoardImages } from '../interfaces/interface';
 import { map } from 'rxjs/operators';
 import { ImageLike } from '../interfaces/interface';
 
@@ -24,8 +24,8 @@ export class GetImage {
     public getImages(): Observable<ShareBoardImages[]> {
         return this.http.get<ShareBoardImages[]>(this.dotnetImageUrl);
     }
-    public uploadImageLike(imageData: ImageLike): Observable<ImageLike> {
-      return this.http.post<ImageLike>(this.dotnetImageUrl, imageData);
+    public uploadImageLike(imageData: ImageLike): Observable<string> {
+      return this.http.post<string>(this.dotnetImageUrl +'uploadImageLike', imageData);
     }
       
       

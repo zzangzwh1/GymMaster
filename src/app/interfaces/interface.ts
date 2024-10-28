@@ -59,7 +59,7 @@ export interface ShareBoardImages{
 export interface ImageLike{
   ShareBoardId: number;
   MemberId: number;
-  Like: number; 
+  ImageLike: number; 
 
 }
 
