@@ -57,9 +57,9 @@ export interface ShareBoardImages{
   lastModified: string;
 }
 export interface ImageLike{
-  ShareBoardId: number;
-  MemberId: number;
-  ImageLike: number; 
+  shareBoardId: number;
+  memberId: number;
+  imageLike: number; 
 
 }
 

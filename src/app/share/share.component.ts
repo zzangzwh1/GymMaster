@@ -22,11 +22,12 @@ export class ShareComponent implements OnInit {
   public imageUrls: string[] = []; 
   public test: number =0;  
   public addLike : ImageLike ={
-    ShareBoardId :0,
-    MemberId : 0,
-    ImageLike :0
+    shareBoardId :0,
+    memberId : 0,
+    imageLike :0
 
   }
+  public likedImageArr : ImageLike[] = [];
   public liked = false;
   constructor(private auth: AuthService,private image : GetImage,private titleService: Title,private router : Router) {
    
@@ -35,31 +36,41 @@ export class ShareComponent implements OnInit {
 
 
   ngOnInit(): void {  
+    const memberId: string = sessionStorage.getItem('userId') || '';
     if(this.router.url.includes('Home'))
     {
-      const memberId: string = sessionStorage.getItem('userId') || '';
       console.log('Current HOme');
       this.loadCurrentMemberImages(memberId);
     }
     else{
       this.titleService.setTitle('Share');
-      this.loadMemberImages();
+      this.loadMemberImages(memberId);
     }  
+    
    
   }
 
-  private loadMemberImages(): void {
+  private loadMemberImages(memberId: string): void {
     this.image.getImages().subscribe(
       (images: ShareBoardImages[] | undefined) => {
         if (!images || images.length === 0) {
           console.log('No images found for this member.');
           this.memberImages = [];
-        } else {         
+        } else {
           this.memberImages = images;
-          console.log('TEST---TEST',this.memberImages);
+        
+          this.auth.getMemberIdByUserID(memberId).subscribe(
+            (fetchedMemberId: string) => {
+              this.currentMemberId = fetchedMemberId;    
+              if (fetchedMemberId) {
+                this.likedImages(Number(fetchedMemberId));
+              }
+            },
+            (error) => this.handleError('Error fetching member ID', error)
+          );
         }
       },
-      (error) => this.handleError('Error fetching images', error) 
+      (error) => this.handleError('Error fetching images', error)
     );
   }
   private loadCurrentMemberImages(memberId: string): void {
@@ -73,9 +84,10 @@ export class ShareComponent implements OnInit {
             if (!images || images.length === 0) {        
               console.log('No images found for this member.');
               this.memberImages = [];            
-            } else {
-              console.log('TEST',images);
-              this.memberImages = images;           
+            } else {           
+              this.memberImages = images;  
+               
+              this.likedImages(Number(fetchedMemberId)) ;       
            
             }
           },
@@ -90,12 +102,33 @@ export class ShareComponent implements OnInit {
   private handleError(message: string, error: any): void {
     console.error(message, error);
   }
+  private likedImages(memberId: number): void {
+    this.image.getlikedImages(memberId).subscribe({
+        next: (likedImages) => {
+      
+          this.likedImageArr = likedImages;    
+          this.memberImages.forEach((image) => {            
+          const likedImage = likedImages.find((liked) => liked.shareBoardId === image.shareBoardId);        
+            if (likedImage) {
+             image.likeImage = true;           
+            }
+          });         
+        },
+        error: (error) => {
+            console.error('Error fetching liked images:', error);
+         
+        }
+    });
+}
+
   public likeImage(image: ShareBoardImages,index:number): void {
-    this.addLike.MemberId = image.memberId;
-    this.addLike.ShareBoardId = image.shareBoardId;
+    
+    this.addLike.memberId = image.memberId;
+    this.addLike.shareBoardId = image.shareBoardId;
+
     if (this.memberImages[index].likeImage) {
       this.memberImages[index].likeImage = false; 
-      this.addLike.ImageLike = 0;
+      this.addLike.imageLike = 0;
       this.image.uploadImageLike(this.addLike).subscribe({
         next: (response) => {         
             console.log('Image uploaded successfully!', response);
@@ -109,7 +142,7 @@ export class ShareComponent implements OnInit {
         }
     });      
     } else {
-      this.addLike.ImageLike = 1;
+      this.addLike.imageLike = 1;
       this.memberImages[index].likeImage = true;  
       this.image.uploadImageLike(this.addLike).subscribe({
         next: (response) => {
@@ -125,6 +158,8 @@ export class ShareComponent implements OnInit {
     });
     }   
   } 
+  
+  
   
 }
 

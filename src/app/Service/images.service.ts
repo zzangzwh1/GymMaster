@@ -27,6 +27,9 @@ export class GetImage {
     public uploadImageLike(imageData: ImageLike): Observable<string> {
       return this.http.post<string>(this.dotnetImageUrl +'uploadImageLike', imageData);
     }
+    public getlikedImages(member:number) : Observable<ImageLike[]>{      
+          return this.http.get<ImageLike[]>(this.dotnetImageUrl +`member?member=${member}`);
+    }
       
       
  
