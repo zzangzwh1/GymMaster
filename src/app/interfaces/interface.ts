@@ -62,6 +62,12 @@ export interface ImageLike{
   imageLike: number; 
 
 }
+export interface boardComment{
+  shareBoardId: number;
+  memberId: number;
+  comment :string
+}
+
 
 
 

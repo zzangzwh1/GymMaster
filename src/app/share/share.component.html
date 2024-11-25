@@ -1,25 +1,53 @@
 <br>
 <br>
-<div class="container mt-6">
+<div class="container mt-4">
   <div class="row">
-    <div class="col-md-6 mb-6" *ngFor="let image of memberImages; let i = index">
-      <div class="card shadow-sm">
-        <img [src]="image.profileImage"  alt="Member Image {{ i + 1 }}" class="card-img-top">
+    <div 
+      class="col-sm-12 col-md-6 col-lg-4 col-xl-3 card-column" 
+      *ngFor="let image of memberImages; let i = index"
+    >
+      <div class="card shadow-sm h-100">
+        <img 
+          [src]="image.profileImage" 
+          alt="Member Image {{ i + 1 }}" 
+          class="card-img-top"
+        >
+        <div class="boardComment" *ngIf="isCommented[i]">          
+          <label for="" id="currentMemberId">{{memberId}} :</label>
+          <input   type="text"
+          id="commentText"
+          #commentInput
+          style="margin-right: 10px;"
+          placeholder="Enter your comment" />
+          <button  class="btn btn-outline-primary" (click)="addComment(commentInput.value,image)" >save</button>   
+          <div class="boardCommentText">           
+          </div>   
+          
+        </div>
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center">
             <div class="btn-group">
-              <button type="button" class="btn btn-outline-primary" (click)="likeImage(image,i)">
-                <i class="pi" [ngClass]="image.likeImage ? 'pi-heart-fill' : 'pi-heart'" [style.color]="image.likeImage ? 'red' : 'red'" style="font-size: 1rem"></i><span class="likeText"></span> Like 
+              <button 
+                type="button" 
+                class="btn btn-outline-primary" 
+                (click)="likeImage(image, i)"
+              >
+                <i 
+                  class="pi" 
+                  [ngClass]="image.likeImage ? 'pi-heart-fill' : 'pi-heart'" 
+                  style="font-size: 1rem; color: red;">
+                </i> Like
               </button>
-             
-              <button type="button" class="btn btn-outline-secondary">
+              <button type="button" class="btn btn-outline-secondary" [ngClass]="{'btn-outline-secondary': !isCommented[i], 'btn-secondary': isCommented[i]}"  (click)="toggleComments(image,i)">
                 <i class="pi pi-comment" style="font-size: 1rem"></i> Comment
-              </button>
+              </button>     
             </div>
+       
           </div>
+         
         </div>
+       
       </div>
     </div>
   </div>
 </div>
-

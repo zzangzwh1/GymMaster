@@ -7,6 +7,8 @@ import { ShareBoardImages } from '../interfaces/interface';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { ImageLike } from '../interfaces/interface';
+import { boardComment } from '../interfaces/interface';
+import {GetComment} from '../Service/comment.service';
 
 
 
@@ -26,25 +28,36 @@ export class ShareComponent implements OnInit {
     memberId : 0,
     imageLike :0
 
+  } 
+  public comment : boardComment ={
+    shareBoardId :0,
+    memberId :0,
+    comment:''
   }
+
+  public isCommented: boolean[] = [];
+  public isVisible : boolean[] = [];
+  public memberId :string ='';
+
   public likedImageArr : ImageLike[] = [];
   public liked = false;
-  constructor(private auth: AuthService,private image : GetImage,private titleService: Title,private router : Router) {
-   
-
+  constructor(private auth: AuthService,private image : GetImage,private comments : GetComment, private titleService: Title,private router : Router) {
+    this.isCommented = new Array(this.memberImages.length).fill(false);
+    
   }  
 
 
   ngOnInit(): void {  
-    const memberId: string = sessionStorage.getItem('userId') || '';
+     this.memberId = sessionStorage.getItem('userId') || '';  
+   
     if(this.router.url.includes('Home'))
     {
       console.log('Current HOme');
-      this.loadCurrentMemberImages(memberId);
+      this.loadCurrentMemberImages(this.memberId);
     }
     else{
       this.titleService.setTitle('Share');
-      this.loadMemberImages(memberId);
+      this.loadMemberImages(this.memberId);
     }  
     
    
@@ -77,12 +90,10 @@ export class ShareComponent implements OnInit {
     this.auth.getMemberIdByUserID(memberId).subscribe(
       (fetchedMemberId: string) => {
         this.currentMemberId = fetchedMemberId;
-        console.log('Current Member ID:', fetchedMemberId);
-  
-        this.image.getMemberImage(Number(fetchedMemberId)).subscribe(
+               this.image.getMemberImage(Number(fetchedMemberId)).subscribe(
           (images: ShareBoardImages[] | undefined) => {
             if (!images || images.length === 0) {        
-              console.log('No images found for this member.');
+           
               this.memberImages = [];            
             } else {           
               this.memberImages = images;  
@@ -122,7 +133,7 @@ export class ShareComponent implements OnInit {
 }
 
   public likeImage(image: ShareBoardImages,index:number): void {
-    
+   
     this.addLike.memberId = image.memberId;
     this.addLike.shareBoardId = image.shareBoardId;
 
@@ -158,6 +169,41 @@ export class ShareComponent implements OnInit {
     });
     }   
   } 
+  public toggleComments(image: ShareBoardImages, index: number): void { 
+    this.isCommented[index] = !this.isCommented[index];
+  
+  }
+  public addComment(comment: string, image: ShareBoardImages): void {
+    // Validate input data
+    if (!comment.trim() || image.memberId <= 0 || image.shareBoardId <= 0) {
+      console.warn('Invalid input: Comment text or IDs are missing or invalid.');
+      return;
+    }
+  
+    // Create the boardComment object
+    const boardComment: boardComment = {
+      comment: comment, 
+      memberId: image.memberId,
+      shareBoardId: image.shareBoardId
+    };
+  
+    // Make the API call to add the comment
+    this.comments.addComment(boardComment).subscribe({
+      next: (response) => {
+        console.log('Comment added successfully:', response);
+        let commentText = document.getElementById('commentText') as HTMLInputElement;      
+        commentText.value = '';
+      },
+      error: (error) => {
+        console.error('Failed to add comment:', error);
+       
+      },
+      complete: () => {
+        console.log('Add Comment operation completed.');
+    
+      }
+    });
+  }
   
   
   
