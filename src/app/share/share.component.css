@@ -33,6 +33,8 @@
 }
 
 .boardComment {
+   justify-content: center;
+   text-align: center;
     max-height: 100px; 
     overflow-y: auto; 
   

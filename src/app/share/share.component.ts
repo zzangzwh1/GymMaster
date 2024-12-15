@@ -29,6 +29,7 @@ export class ShareComponent implements OnInit {
     imageLike :0
 
   } 
+  public getComments :boardComment[] =[];
   public comment : boardComment ={
     shareBoardId :0,
     memberId :0,
@@ -49,7 +50,7 @@ export class ShareComponent implements OnInit {
 
   ngOnInit(): void {  
      this.memberId = sessionStorage.getItem('userId') || '';  
-   
+    this.getEveryComment();
     if(this.router.url.includes('Home'))
     {
       console.log('Current HOme');
@@ -70,8 +71,7 @@ export class ShareComponent implements OnInit {
           console.log('No images found for this member.');
           this.memberImages = [];
         } else {
-          this.memberImages = images;
-        
+          this.memberImages = images;            
           this.auth.getMemberIdByUserID(memberId).subscribe(
             (fetchedMemberId: string) => {
               this.currentMemberId = fetchedMemberId;    
@@ -171,10 +171,12 @@ export class ShareComponent implements OnInit {
   } 
   public toggleComments(image: ShareBoardImages, index: number): void { 
     this.isCommented[index] = !this.isCommented[index];
-  
+    console.log(image);
+   
   }
   public addComment(comment: string, image: ShareBoardImages): void {
     // Validate input data
+    console.log(image);
     if (!comment.trim() || image.memberId <= 0 || image.shareBoardId <= 0) {
       console.warn('Invalid input: Comment text or IDs are missing or invalid.');
       return;
@@ -204,7 +206,18 @@ export class ShareComponent implements OnInit {
       }
     });
   }
-  
+  public getEveryComment(): void {   
+      this.comments.getComments().subscribe({
+        next: (comments: boardComment[]) => {         
+            this.getComments = comments;
+        },
+        error: (error) => {
+          console.error('Error fetching comments:', error);
+        }
+      });
+    
+  }
+
   
   
 }

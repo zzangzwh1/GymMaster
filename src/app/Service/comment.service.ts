@@ -20,7 +20,13 @@ export class GetComment {
     public addComment(comment: boardComment): Observable<boardComment> {
         return this.http.post<boardComment>(`${this.dotnetImageUrl}AddComment`, comment);
     }
+    public getComments(): Observable<boardComment[]>
+    {
+      return this.http.get<boardComment[]>(`${this.dotnetImageUrl}GetComments`)
+
+    }
       
- 
+   
+  
   }
   
