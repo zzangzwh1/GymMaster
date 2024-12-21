@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
-import { boardComment } from '../interfaces/interface';
+import { boardComment,MemberAndCommentInfoDTO } from '../interfaces/interface';
 
 
 
@@ -20,9 +20,9 @@ export class GetComment {
     public addComment(comment: boardComment): Observable<boardComment> {
         return this.http.post<boardComment>(`${this.dotnetImageUrl}AddComment`, comment);
     }
-    public getComments(): Observable<boardComment[]>
+    public getCommentsAndMemberInfo(): Observable<MemberAndCommentInfoDTO[]>
     {
-      return this.http.get<boardComment[]>(`${this.dotnetImageUrl}GetComments`)
+      return this.http.get<MemberAndCommentInfoDTO[]>(`${this.dotnetImageUrl}GetComments`)
 
     }
       

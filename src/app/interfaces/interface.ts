@@ -67,6 +67,18 @@ export interface boardComment{
   memberId: number;
   comment :string
 }
+export interface MemberAndCommentInfoDTO {
+  userId: string;
+  firstName: string;
+  lastName: string;
+  address: string;
+  email: string;
+  phone: string;
+  shareBoardId: number;
+  memberId: number;
+  comment: string;
+}
+
 
 
 

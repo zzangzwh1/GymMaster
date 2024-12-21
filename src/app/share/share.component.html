@@ -11,10 +11,10 @@
           [src]="image.profileImage" 
           alt="Member Image {{ i + 1 }}" 
           class="card-img-top"
-        >
-     
-
+        >   
          
+
+        
         <div class="boardComment" *ngIf="isCommented[i]">       
            
           <label for="" id="currentMemberId">{{memberId}} :</label>
@@ -24,9 +24,9 @@
           style="width:150px;"
           placeholder="Add comments" />
           <button  class="btn btn-outline-primary" (click)="addComment(commentInput.value,image)" >Add</button>             
-          <div class="boardCommentText" *ngFor="let comment of getComments">
+          <div class="boardCommentText" *ngFor="let comment of getCommentInfos">
             <div *ngIf="image.shareBoardId === comment.shareBoardId">
-              <p>{{ comment.memberId }} : {{ comment.comment }}</p>
+              <p>{{ comment.userId }} : {{ comment.comment }}</p>
             </div>
           </div>
         </div>

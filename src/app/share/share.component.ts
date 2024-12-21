@@ -7,7 +7,7 @@ import { ShareBoardImages } from '../interfaces/interface';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { ImageLike } from '../interfaces/interface';
-import { boardComment } from '../interfaces/interface';
+import { boardComment,MemberAndCommentInfoDTO } from '../interfaces/interface';
 import {GetComment} from '../Service/comment.service';
 
 
@@ -35,6 +35,18 @@ export class ShareComponent implements OnInit {
     memberId :0,
     comment:''
   }
+public getCommentInfos : MemberAndCommentInfoDTO[] = [];
+public commentInfo : MemberAndCommentInfoDTO ={
+  userId: '',
+  firstName: '',
+  lastName:  '',  
+  address:  '', 
+  email: '',
+  phone: '',
+  shareBoardId: 0,
+  memberId:0, 
+  comment:'' 
+}
 
   public isCommented: boolean[] = [];
   public isVisible : boolean[] = [];
@@ -50,6 +62,7 @@ export class ShareComponent implements OnInit {
 
   ngOnInit(): void {  
      this.memberId = sessionStorage.getItem('userId') || '';  
+     
     this.getEveryComment();
     if(this.router.url.includes('Home'))
     {
@@ -59,8 +72,7 @@ export class ShareComponent implements OnInit {
     else{
       this.titleService.setTitle('Share');
       this.loadMemberImages(this.memberId);
-    }  
-    
+    }      
    
   }
 
@@ -96,8 +108,7 @@ export class ShareComponent implements OnInit {
            
               this.memberImages = [];            
             } else {           
-              this.memberImages = images;  
-               
+              this.memberImages = images;                 
               this.likedImages(Number(fetchedMemberId)) ;       
            
             }
@@ -160,8 +171,7 @@ export class ShareComponent implements OnInit {
             console.log('Image uploaded successfully!', response);             
         },
         error: (error) => {
-            console.error('Image like upload failed:', error);
-            alert('Image like upload failed');
+            console.error('Image like upload failed:', error);            
         },
         complete: () => {
             console.log('Image like upload completed');
@@ -207,9 +217,10 @@ export class ShareComponent implements OnInit {
     });
   }
   public getEveryComment(): void {   
-      this.comments.getComments().subscribe({
-        next: (comments: boardComment[]) => {         
-            this.getComments = comments;
+      this.comments.getCommentsAndMemberInfo().subscribe({
+        next: (comments: MemberAndCommentInfoDTO[]) => {         
+            this.getCommentInfos = comments;
+            console.log(`comments: ${comments} `);
         },
         error: (error) => {
           console.error('Error fetching comments:', error);
