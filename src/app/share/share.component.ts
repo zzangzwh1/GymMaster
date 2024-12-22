@@ -47,6 +47,8 @@ public commentInfo : MemberAndCommentInfoDTO ={
   memberId:0, 
   comment:'' 
 }
+public tempComment: { name: string|null; comment: string ,shareBoardId :number }[] = []; 
+
 
   public isCommented: boolean[] = [];
   public isVisible : boolean[] = [];
@@ -59,14 +61,12 @@ public commentInfo : MemberAndCommentInfoDTO ={
     
   }  
 
-
   ngOnInit(): void {  
-     this.memberId = sessionStorage.getItem('userId') || '';  
-     
+     this.memberId = sessionStorage.getItem('userId') || '';     
     this.getEveryComment();
     if(this.router.url.includes('Home'))
     {
-      console.log('Current HOme');
+      console.log('Current Home');
       this.loadCurrentMemberImages(this.memberId);
     }
     else{
@@ -187,6 +187,7 @@ public commentInfo : MemberAndCommentInfoDTO ={
   public addComment(comment: string, image: ShareBoardImages): void {
     // Validate input data
     console.log(image);
+    console.log('TEST',comment);
     if (!comment.trim() || image.memberId <= 0 || image.shareBoardId <= 0) {
       console.warn('Invalid input: Comment text or IDs are missing or invalid.');
       return;
@@ -205,6 +206,8 @@ public commentInfo : MemberAndCommentInfoDTO ={
         console.log('Comment added successfully:', response);
         let commentText = document.getElementById('commentText') as HTMLInputElement;      
         commentText.value = '';
+        const currentUser = sessionStorage.getItem('userId');
+        this.tempComment.push({name:currentUser,comment:comment, shareBoardId:image.shareBoardId});
       },
       error: (error) => {
         console.error('Failed to add comment:', error);
@@ -220,7 +223,7 @@ public commentInfo : MemberAndCommentInfoDTO ={
       this.comments.getCommentsAndMemberInfo().subscribe({
         next: (comments: MemberAndCommentInfoDTO[]) => {         
             this.getCommentInfos = comments;
-            console.log(`comments: ${comments} `);
+            console.log(`comments TEST: ${comments} `);
         },
         error: (error) => {
           console.error('Error fetching comments:', error);

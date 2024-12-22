@@ -11,25 +11,48 @@
           [src]="image.profileImage" 
           alt="Member Image {{ i + 1 }}" 
           class="card-img-top"
-        >   
-         
+        >       
 
-        
         <div class="boardComment" *ngIf="isCommented[i]">       
+          <!-- Member ID Input -->
+          <label for="" id="currentMemberId">{{ memberId }} :</label>
+          <input 
+            type="text"
+            id="commentText"
+            #commentInput
+            style="width:150px;"
+            placeholder="Add comments" />
+          <button 
+            class="btn btn-outline-primary" 
+            (click)="addComment(commentInput.value, image)">Add</button>             
+            <div *ngIf="tempComment.length > 0">
+              <div 
+                *ngFor="let comment of tempComment"                
+              >
+
+                <div class="d-flex justify-content-between align-items-center mt-3" *ngIf="comment.shareBoardId === image.shareBoardId">             
+                  <div class="boardCommentText">
+                    <span class="text-muted">{{ comment.name }}</span>
+                  </div>            
            
-          <label for="" id="currentMemberId">{{memberId}} :</label>
-          <input   type="text"
-          id="commentText"
-          #commentInput
-          style="width:150px;"
-          placeholder="Add comments" />
-          <button  class="btn btn-outline-primary" (click)="addComment(commentInput.value,image)" >Add</button>             
-          <div class="boardCommentText" *ngFor="let comment of getCommentInfos">
-            <div *ngIf="image.shareBoardId === comment.shareBoardId">
-              <p>{{ comment.userId }} : {{ comment.comment }}</p>
+                  <div class="flex-grow-1 text-center">
+                    <p class="mb-0">{{ comment.comment }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+          <div class="boardCommentText mt-3" *ngFor="let comment of getCommentInfos">
+            <div *ngIf="image.shareBoardId === comment.shareBoardId" class="d-flex justify-content-between align-items-center">
+            
+              <span class="text-muted">{{ comment.userId }}</span>              
+              <div class="flex-grow-1 text-center">
+                <p class="mb-0">{{ comment.comment }}</p>
+              </div>
             </div>
           </div>
         </div>
+        
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center">
             <div class="btn-group">
