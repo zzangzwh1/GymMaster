@@ -13,14 +13,14 @@ import { AuthService } from '../Service/auth.service';
 })
 
 export class HomeComponent implements OnInit {
-  public username :string = '';
+  public username :string | null= '';
   private selectedFile: File | null = null;
   private currentMeberId:string  ='';
   public uploadImages :UploadImage ={
     memberId : 0,
     formData : null
  }
-  
+  public isLoggedIn :boolean =false;
 
   
   private dotnetMemberUrl = 'https://localhost:7298/api/Image/upload';
@@ -28,12 +28,11 @@ export class HomeComponent implements OnInit {
     private titleService: Title,private messageService: MessageService,private http: HttpClient,private auth: AuthService
   ) { 
     titleService.setTitle('Home');
+   
   }
-  ngOnInit(): void {
-//    const currentUser = sessionStorage.getItem('userId');
-
-      console.log('Test');
-    
+  ngOnInit(): void {  
+    this.username = sessionStorage.getItem('userId') ;
+        
   }
   public onSelect(event: any) {
     const member: string =  sessionStorage.getItem('userId')|| ''; 

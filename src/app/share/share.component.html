@@ -2,80 +2,61 @@
 <br>
 <div class="container mt-4">
   <div class="row">
-    <div 
-      class="col-sm-12 col-md-6 col-lg-4 col-xl-3 card-column" 
-      *ngFor="let image of memberImages; let i = index"
-    >
+    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 card-column" *ngFor="let image of memberImages; let i = index">
       <div class="card shadow-sm h-100">
-        <img 
-          [src]="image.profileImage" 
-          alt="Member Image {{ i + 1 }}" 
-          class="card-img-top"
-        >       
+        <img [src]="image.profileImage" alt="Member Image {{ i + 1 }}" class="card-img-top">
 
-        <div class="boardComment" *ngIf="isCommented[i]">       
-          <!-- Member ID Input -->
+        <div class="boardComment" *ngIf="isCommented[i]"> 
+          <div *ngIf="memberId !=''">       
           <label for="" id="currentMemberId">{{ memberId }} :</label>
-          <input 
-            type="text"
-            id="commentText"
-            #commentInput
-            style="width:150px;"
-            placeholder="Add comments" />
-          <button 
-            class="btn btn-outline-primary" 
-            (click)="addComment(commentInput.value, image)">Add</button>             
-            <div *ngIf="tempComment.length > 0">
-              <div 
-                *ngFor="let comment of tempComment"                
-              >
+          <input type="text" id="commentText" #commentInput style="width:150px;" placeholder="Add comments" />
+          <button class="btn btn-outline-primary" (click)="addComment(commentInput.value, image)">Add</button>
+        </div>
+          <div *ngIf="tempComment.length > 0">
+            <div *ngFor="let comment of tempComment">
 
-                <div class="d-flex justify-content-between align-items-center mt-3" *ngIf="comment.shareBoardId === image.shareBoardId">             
-                  <div class="boardCommentText">
-                    <span class="text-muted">{{ comment.name }}</span>
-                  </div>            
-           
-                  <div class="flex-grow-1 text-center">
-                    <p class="mb-0">{{ comment.comment }}</p>
-                  </div>
+              <div class="d-flex justify-content-between align-items-center mt-3"
+                *ngIf="comment.shareBoardId === image.shareBoardId">
+                <div class="boardCommentText">
+                  <span class="text-muted">{{ comment.name }}</span>
+                </div>
+
+                <div class="flex-grow-1 text-center">
+                  <p class="mb-0">{{ comment.comment }}</p>
                 </div>
               </div>
             </div>
-            
+          </div>
+
           <div class="boardCommentText mt-3" *ngFor="let comment of getCommentInfos">
-            <div *ngIf="image.shareBoardId === comment.shareBoardId" class="d-flex justify-content-between align-items-center">
-            
-              <span class="text-muted">{{ comment.userId }}</span>              
+            <div *ngIf="image.shareBoardId === comment.shareBoardId"
+              class="d-flex justify-content-between align-items-center">
+
+              <span class="text-muted">{{ comment.userId }}</span>
               <div class="flex-grow-1 text-center">
                 <p class="mb-0">{{ comment.comment }}</p>
               </div>
             </div>
           </div>
         </div>
-        
+
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center">
             <div class="btn-group">
-              <button 
-                type="button" 
-                class="btn btn-outline-primary" 
-                (click)="likeImage(image, i)"
-              >
-                <i 
-                  class="pi" 
-                  [ngClass]="image.likeImage ? 'pi-heart-fill' : 'pi-heart'" 
-                  style="font-size: 1rem; color: red;">
-                </i> Like
+              <button type="button" class="btn btn-outline-primary" (click)="likeImage(image, i)">
+                <i class="pi" [ngClass]="image.likeImage ? 'pi-heart-fill' : 'pi-heart'"
+                  style="font-size: 1rem; color: red;"> </i> Like
               </button>
-              <button type="button" class="btn btn-outline-secondary" [ngClass]="{'btn-outline-secondary': !isCommented[i], 'btn-secondary': isCommented[i]}"  (click)="toggleComments(image,i)">
+              <button type="button" class="btn btn-outline-secondary"
+                [ngClass]="{'btn-outline-secondary': !isCommented[i], 'btn-secondary': isCommented[i]}"
+                (click)="toggleComments(image,i)">
                 <i class="pi pi-comment" style="font-size: 1rem"></i> Comment
-              </button>     
+              </button>
             </div>
-       
           </div>
-         
+
         </div>
-       
+
       </div>
     </div>
   </div>

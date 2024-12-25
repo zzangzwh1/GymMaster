@@ -37,6 +37,7 @@ export class WorkoutComponent implements OnInit {
     ExpirationDate: '',
     LastModified : '' 
   }
+  public username :string|null ='';
   private workoutDataList: WorkoutSetDTO[] = [];
 
   
@@ -52,12 +53,10 @@ export class WorkoutComponent implements OnInit {
   }
 
   ngOnInit(): void {
-   if(sessionStorage.getItem('userId') !==null){
-
-  
+    this.username = sessionStorage.getItem('userId')
+   if(this.username !==null){  
     const exerciseControl = this.form.get('exercise');
     const dateControl = this.form.get('date');
-
 
     if (exerciseControl && dateControl) {
       const initialExerciseValue = exerciseControl.value;
@@ -77,9 +76,7 @@ export class WorkoutComponent implements OnInit {
       });
     }
   }
-  else{
-    alert('You Must Login If you want to log your daily work out!');
-  }
+ 
   }
 
   currentInputValue(): string {

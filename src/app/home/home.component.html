@@ -1,27 +1,26 @@
-<br>
-
-<div>
-    <app-my-chart/>    
-</div>
-<br>
-<div class="container">
-    <h4>Upload Images</h4>
-  <div class="card flex justify-content-center">
-        <p-toast />
-        <p-fileUpload 
-            mode="basic" 
-            chooseLabel="Choose" 
-            chooseIcon="pi pi-upload"
-            name="demo[]" 
-            url="https://www.primefaces.org/cdn/api/upload.php" 
-            accept="image/*" 
-            maxFileSize="1000000" 
-            (onSelect)="onSelect($event)" 
-            (onUpload)="onUpload()" />
+<div *ngIf="username != null; else notLoggedIn">
+    <div>
+        <app-my-chart></app-my-chart>
     </div>
+    <br>
+    <div class="container">
+        <h4>Upload Images</h4>
+        <div class="card flex justify-content-center">
+            <p-toast></p-toast>
+            <p-fileUpload mode="basic" chooseLabel="Choose" chooseIcon="pi pi-upload" name="demo[]"
+                url="https://www.primefaces.org/cdn/api/upload.php" accept="image/*" maxFileSize="1000000"
+                (onSelect)="onSelect($event)" (onUpload)="onUpload()">
+            </p-fileUpload>
+        </div>
+    </div>
+    <br>
+    <div>
+        <app-get-images></app-get-images>
+    </div>
+    <hr>
 </div>
-<br>
-<div>
-    <app-get-images/>
-</div>
-<hr>
+<ng-template #notLoggedIn>
+    <div class="container">
+        <app-helper />
+    </div>
+</ng-template>

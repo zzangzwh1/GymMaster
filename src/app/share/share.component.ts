@@ -62,7 +62,8 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
   }  
 
   ngOnInit(): void {  
-     this.memberId = sessionStorage.getItem('userId') || '';     
+    this.memberId = sessionStorage.getItem('userId') || '';    
+    console.log('TEST--------',this.memberId); 
     this.getEveryComment();
     if(this.router.url.includes('Home'))
     {

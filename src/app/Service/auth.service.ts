@@ -34,8 +34,6 @@ export class AuthService {
         })
       );
   }
-
-
   public register(userInfo: any): Observable<any> {
     return this.http.post(`${this.dotnetMemberUrl}/register`, userInfo);
   }

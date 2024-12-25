@@ -28,6 +28,7 @@ import { ShareComponent } from './share/share.component';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { HelperComponent } from './helper/helper.component';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { MessageService } from 'primeng/api';
     WorkoutComponent,
     TableComponent,
     MyChartComponent,
-    ShareComponent
+    ShareComponent,
+    HelperComponent
 
   ],
   imports: [

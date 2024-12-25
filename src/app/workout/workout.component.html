@@ -1,4 +1,5 @@
 
+<div *ngIf="username != null; else notLoggedIn">
 <div class="container">
     <h2 class="heading">Work Out Daily Log</h2>
  
@@ -43,12 +44,10 @@
  </div>  
 
  <div class="containerTable" [ngStyle]="{'display': displayTable}">
-  <!-- Parent Component Template -->
   <app-table (dataChange)="countChange($event)"/>
 </div>
 
 <div class="containerTable" [ngStyle]="{'display': displayTable}">
- <!-- Parent Component Template -->
  <button 
   mat-raised-button 
    color="primary" 
@@ -58,3 +57,9 @@
    Upload Exercise
 </button>
 </div>
+</div>
+<ng-template #notLoggedIn>
+  <div class="container">
+      <app-helper />
+  </div>
+</ng-template>
