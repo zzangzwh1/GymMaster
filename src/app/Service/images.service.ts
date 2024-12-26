@@ -30,6 +30,11 @@ export class GetImage {
     public getlikedImages(member:number) : Observable<ImageLike[]>{      
           return this.http.get<ImageLike[]>(this.dotnetImageUrl +`member?member=${member}`);
     }
+    public deleteImage(shareBoardId: number): Observable<ShareBoardImages> {
+      return this.http.delete<ShareBoardImages>(`${this.dotnetImageUrl}Delete?shareBoardId=${shareBoardId}`);
+    }
+    
+    
       
       
  

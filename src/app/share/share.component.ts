@@ -47,12 +47,14 @@ public commentInfo : MemberAndCommentInfoDTO ={
   memberId:0, 
   comment:'' 
 }
+buttonTextMap: { [key: number]: string } = {};
 public tempComment: { name: string|null; comment: string ,shareBoardId :number }[] = []; 
 
 
   public isCommented: boolean[] = [];
   public isVisible : boolean[] = [];
   public memberId :string ='';
+  public isHome: boolean =false;
 
   public likedImageArr : ImageLike[] = [];
   public liked = false;
@@ -62,13 +64,14 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
   }  
 
   ngOnInit(): void {  
-    this.memberId = sessionStorage.getItem('userId') || '';    
-    console.log('TEST--------',this.memberId); 
+    this.memberId = sessionStorage.getItem('userId') || '';      
     this.getEveryComment();
     if(this.router.url.includes('Home'))
     {
       console.log('Current Home');
+      this.isHome = true;
       this.loadCurrentMemberImages(this.memberId);
+      console.log('TESTING',this.memberImages);
     }
     else{
       this.titleService.setTitle('Share');
@@ -109,7 +112,8 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
            
               this.memberImages = [];            
             } else {           
-              this.memberImages = images;                 
+              this.memberImages = images;   
+              console.log('TEST~~~~~~~~~~~~',images);                           
               this.likedImages(Number(fetchedMemberId)) ;       
            
             }
@@ -231,6 +235,27 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
         }
       });
     
+  }
+  public onHover(isHovering: boolean, imageId: number): void {
+    console.log('Image ID:', imageId);   
+    this.buttonTextMap[imageId] = isHovering ? 'Delete' : 'X';
+  }
+  public deleteImage(image: ShareBoardImages): void {
+    console.log('Delete Image', image);
+  
+    // Call the deleteImage service method and subscribe to it
+    this.image.deleteImage(image.shareBoardId).subscribe({
+      next: (deletedShareBoard: ShareBoardImages) => {
+        console.log('Deleted Image Response: ', deletedShareBoard);     
+      },
+      error: (error) => {
+        console.error('Error deleting image:', error);
+      },
+        complete: () => {
+        console.log('Delete operation completed.');
+        location.reload();
+      }
+    });
   }
 
   

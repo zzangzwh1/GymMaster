@@ -56,3 +56,12 @@
 #commetnText{
     width: 40%;
 }
+.btnDeleteDiv{
+  text-align: right;
+}
+
+.btnDelete{
+  color: #2192ff;;
+  background-color: transparent;
+  border: none;
+}
