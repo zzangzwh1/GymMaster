@@ -63,3 +63,6 @@ svg{
 }
 /* Media query for larger screens */
 
+#headerBrand:hover{
+color:#2192ff;
+}

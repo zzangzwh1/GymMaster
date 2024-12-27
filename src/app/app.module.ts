@@ -29,6 +29,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { HelperComponent } from './helper/helper.component';
+import { EditComponent } from './edit/edit.component';
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import { HelperComponent } from './helper/helper.component';
     TableComponent,
     MyChartComponent,
     ShareComponent,
-    HelperComponent
+    HelperComponent,
+    EditComponent
 
   ],
   imports: [

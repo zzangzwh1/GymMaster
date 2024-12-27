@@ -1,5 +1,3 @@
-import { Time } from "@angular/common";
-
 export interface Login{
     userId : '',
     password : ''
@@ -8,6 +6,20 @@ export interface Login{
     success: boolean;
     message?: string;
   }
+  export interface MemberDTO {
+    userId: string;
+    password?: string; 
+    sex: string;
+    firstName: string; 
+    lastName: string;
+    birthDate?: Date;
+    address?: string; 
+    email: string;
+    phone?: string; 
+    creationDate: Date;
+    expirationDate: Date;
+  }
+  
   export interface WorkoutData{
     selectPart : string,
     selectdate : string,

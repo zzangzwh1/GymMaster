@@ -1,0 +1,91 @@
+<section class="signupSection">
+  <div class="container">
+    <div class="heading">Update Information</div>
+    <form class="form" *ngIf="editUser" [formGroup]="editUser" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <p class="input-container">
+          <input type="text" name="text" id="text" class="input-field" autocomplete="name" formControlName="userId">
+        </p>
+      </div>
+      <br>
+
+      <div class="form-group">
+        <p class="input-container">
+          <input type="text" placeholder="First Name:" name="text" id="text" class="input-field" autocomplete="name"
+            formControlName="firstName">
+          <label class="input-label" for="text">First Name</label>
+        </p>
+        <div *ngIf="isFieldInvalid('firstName')" class="error-message">
+          First Name is required and must contain only letters.
+        </div>
+
+      </div>
+      <br>
+      <div class="form-group">
+        <p class="input-container">
+          <input type="text" placeholder="Last Name:" name="text" id="text" class="input-field" autocomplete="name"
+            formControlName="lastName">
+          <label class="input-label" for="text">Last Name</label>
+        </p>
+        <div *ngIf="isFieldInvalid('lastName')" class="error-message">
+          Last Name is required and must contain only letters.
+        </div>
+
+      </div>
+      <br>
+
+      <div class="form-group">
+        <p class="input-container">
+          <input type="text" placeholder="Password:" name="text" id="text" class="input-field" autocomplete="name"
+            formControlName="password">
+          <label class="input-label" for="text">Password</label>
+        </p>
+        <div *ngIf="isFieldInvalid('password')" class="error-message">
+          At least 8 characters, at least one letter and one number.
+        </div>
+
+      </div>
+      <br>
+      <div class="form-group">
+        <p class="input-container">
+          <input type="text" placeholder="Email:" name="text" id="text" class="input-field" autocomplete="name"
+            formControlName="email">
+          <label class="input-label" for="text">Email</label>
+        </p>
+        <div *ngIf="isFieldInvalid('email')" class="error-message">
+          Valid Email is required.
+        </div>
+
+      </div>
+      <br>
+
+      <div class="form-group">
+        <p class="input-container">
+          <input type="text" placeholder="Address:" name="text" id="text" class="input-field" autocomplete="name"
+            formControlName="address">
+          <label class="input-label" for="text">Address:</label>
+        </p>
+        <div *ngIf="isFieldInvalid('address')" class="error-message">
+          Valid Address is required.
+        </div>
+
+      </div>
+      <br>
+
+      <div class="form-group">
+        <p class="input-container">
+          <input type="text" placeholder="Phone:" name="text" id="text" class="input-field" autocomplete="name"
+            formControlName="phone">
+          <label class="input-label" for="text">Phone:</label>
+        </p>
+        <div *ngIf="isFieldInvalid('phone')" class="error-message">
+          Phone number is required and must be 10 digits.
+        </div>
+
+      </div>
+      <br>
+
+      <input class="login-button" type="submit" value="Update User Information">
+    </form>
+  </div>
+</section>
