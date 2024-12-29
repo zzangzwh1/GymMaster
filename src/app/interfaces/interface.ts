@@ -16,8 +16,8 @@ export interface Login{
     address?: string; 
     email: string;
     phone?: string; 
-    creationDate: Date;
-    expirationDate: Date;
+   // creationDate: Date;
+    //expirationDate: Date;
   }
   
   export interface WorkoutData{
