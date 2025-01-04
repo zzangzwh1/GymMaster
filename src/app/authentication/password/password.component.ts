@@ -60,8 +60,7 @@ export class PasswordComponent {
     }
   }
   public secureNumberAndEmail(data: string): string {
-    let result = '';
-    console.log('console TEST:', data);
+    let result = '';  
     if (data.includes('@')) {
       this.getPassword.email = data;
       const [beforeAt, afterAt] = data.split('@');
@@ -107,6 +106,6 @@ export class PasswordComponent {
       this.optionErroText = 'Please Select your Option';
     }
 
-    //this.auth.requestPassword(this.getPassword);
+   
   }
 }
