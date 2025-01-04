@@ -20,14 +20,13 @@ export class MyChartComponent implements OnInit {
   public chart: any;
   public charts: any;
 
-
   constructor(private work: Workout, private getMemberWorkout: GetMemberWorkoutStatus) { }
 
   async ngOnInit(): Promise<void> {
     try {
       await this.WorkoutStatus(); 
       await this.WorkoutTrack();
-
+     
       this.chart = new Chart('myChart', {
         type: 'bar',
         data: this.data,
@@ -63,6 +62,7 @@ export class MyChartComponent implements OnInit {
     } catch (error) {
       console.error('Error initializing charts:', error);
     }
+
   }
 
   public async WorkoutTrack():  Promise<void> {
@@ -80,11 +80,12 @@ export class MyChartComponent implements OnInit {
               let montName = this.getMonthName(item.year);
               year.push(montName);
               chartData.push(item.yearCount);
-            });
+            })
+          
             this.data = {
               labels: year,
               datasets: [{
-                label: 'Member Total Annaul Workout',
+                label: 'Member Total Annaul Total Sets Workout',
                 data: chartData,
                 backgroundColor: [
                  'rgba(255, 99, 132, 0.2)',   // Jan
@@ -118,9 +119,6 @@ export class MyChartComponent implements OnInit {
               }]
             };
 
-          
-
-            console.log('Datas:', this.datas);
             resolve();
           },
           (error: any) => {

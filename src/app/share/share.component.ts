@@ -112,8 +112,7 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
            
               this.memberImages = [];            
             } else {           
-              this.memberImages = images;   
-              console.log('TEST~~~~~~~~~~~~',images);                           
+              this.memberImages = images;                                    
               this.likedImages(Number(fetchedMemberId)) ;       
            
             }
@@ -190,9 +189,7 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
    
   }
   public addComment(comment: string, image: ShareBoardImages): void {
-    // Validate input data
-    console.log(image);
-    console.log('TEST',comment);
+
     if (!comment.trim() || image.memberId <= 0 || image.shareBoardId <= 0) {
       console.warn('Invalid input: Comment text or IDs are missing or invalid.');
       return;

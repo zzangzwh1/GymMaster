@@ -64,34 +64,32 @@ export class SignupComponent implements OnInit {
   onSubmit() {
     if (this.loginForm.valid) {
       this.authService.checkUserExists(this.loginForm.value.userId).subscribe({
-        next: () => {
-          // User exists, handle the response as needed
+        next: () => {         
           console.log('UserID Already Exists');
         },
         error: (err) => {
           if (err.status === 404) {
-            // User does not exist, proceed with registration
+           
             this.authService.register(this.loginForm.value).subscribe({
               next: (response) => {
                 console.log('Registered successfully:', response);
                 alert(this.loginForm.value.userId +'is successfully created!');
                 this.router.navigate(['/Authentication']);
-                // Handle successful registration
+               
               },
               error: (error) => {
                 console.error('Registration failed:', error);
-                // Handle registration error
+               
               }
             });
-          } else {
-            // Handle other errors
+          } else {           
             console.error('An error occurred:', err);
           }
         }
       });
     } else {
       console.log('Form is invalid');
-      this.loginForm.markAllAsTouched(); // Mark all fields as touched to show validation errors
+      this.loginForm.markAllAsTouched(); 
     }
   }
 

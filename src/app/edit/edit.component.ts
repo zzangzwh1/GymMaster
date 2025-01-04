@@ -90,12 +90,11 @@ export class EditComponent {
 
         this.auth.updateUserInfo( this.editUser.value).subscribe({
           next: (updatedMember) => {
-            console.log('User info updated successfully:', updatedMember);
-     
+            console.log('User info updated successfully:', updatedMember);  
+            alert('User info updated successfully');
           },
           error: (err) => {
-            console.error('Failed to update user info:', err);
-       
+            console.error('Failed to update user info:', err);       
           }
         });
         

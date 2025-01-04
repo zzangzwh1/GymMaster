@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+
 @Component({
   selector: 'app-authentication',
   templateUrl: './authentication.component.html',

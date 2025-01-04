@@ -30,6 +30,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { HelperComponent } from './helper/helper.component';
 import { EditComponent } from './edit/edit.component';
+import { PasswordComponent } from './authentication/password/password.component';
 
 
 @NgModule({
@@ -44,8 +45,8 @@ import { EditComponent } from './edit/edit.component';
     MyChartComponent,
     ShareComponent,
     HelperComponent,
-    EditComponent
-
+    EditComponent,
+    PasswordComponent
   ],
   imports: [
     BrowserModule,

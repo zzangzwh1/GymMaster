@@ -13,9 +13,9 @@ export interface Login{
     firstName: string; 
     lastName: string;
     birthDate?: Date;
-    address?: string; 
+    address: string; 
     email: string;
-    phone?: string; 
+    phone: string; 
    // creationDate: Date;
     //expirationDate: Date;
   }
@@ -89,6 +89,12 @@ export interface MemberAndCommentInfoDTO {
   shareBoardId: number;
   memberId: number;
   comment: string;
+}
+export interface forgotPassword{
+  userId:string;
+  email :string;
+  phone :string;
+  selectedValue :string;
 }
 
 

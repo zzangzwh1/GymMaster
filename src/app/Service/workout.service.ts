@@ -20,15 +20,14 @@ export class Workout {
       // Return the Observable from the HTTP POST request
       return this.http.post<WorkoutSetDTO[]>(`${this.dotnetWorkoutSetrUrl}/insertWorkout`, workoutInfo).pipe(
           tap(response => {
-              console.log('Insert successful:', response);
-              // Handle any additional success logic here if needed
+              console.log('Insert successful:', response);             
           }),
           catchError(error => {
               console.error('Insert failed:', error);
               if (error.error && error.error.errors) {
-                  console.error('Validation errors:', error.error.errors); // Log validation errors
+                  console.error('Validation errors:', error.error.errors); 
               }
-              // Throw the error to be handled by the caller
+           
               return throwError(error);
           })
       );

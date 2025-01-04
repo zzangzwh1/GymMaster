@@ -6,6 +6,7 @@ import {
   AuthResponse,
   WorkoutSetDTO,
   MemberDTO,
+  forgotPassword
 } from '../interfaces/interface';
 
 @Injectable({
@@ -18,7 +19,7 @@ export class AuthService {
   constructor(private http: HttpClient) {
     this.checkLoginStatus();
   }
-
+  // needs to be in helper method 
   get isLoggedIn() {
     return this.loggedIn.asObservable();
   }
@@ -45,12 +46,12 @@ export class AuthService {
   public register(userInfo: any): Observable<any> {
     return this.http.post(`${this.dotnetMemberUrl}/register`, userInfo);
   }
-
+// needs to be in helper class
   public logout(): void {
     sessionStorage.removeItem('userId');
     this.loggedIn.next(false);
   }
-
+// needs to be in helper method 
   public checkLoginStatus(): void {
     const userId = sessionStorage.getItem('userId');
     this.loggedIn.next(userId !== null);
@@ -71,6 +72,9 @@ export class AuthService {
     return this.http.post<MemberDTO>(`${this.dotnetMemberUrl}/edit`, member, {
       headers: { 'Content-Type': 'application/json' }
     });
+  }
+  public requestPassword(passwordInfo: forgotPassword): Observable<forgotPassword> {
+        return this.http.post<forgotPassword>(`${this.dotnetMemberUrl}/requestPassword`, passwordInfo);
   }
   
 }
