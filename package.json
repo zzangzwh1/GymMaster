@@ -20,6 +20,7 @@
     "@angular/platform-browser": "^17.0.0",
     "@angular/platform-browser-dynamic": "^17.0.0",
     "@angular/router": "^17.0.0",
+    "@microsoft/signalr": "^8.0.7",
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.3",
     "ng2-charts": "^6.0.1",

@@ -2,19 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import "primeicons/primeicons.css";
 import { GetImage } from '../Service/images.service';
 import { AuthService } from '../Service/auth.service';
-import { ShareBoardImages } from '../interfaces/interface';
+import {  IImageLikeCountDTO, ShareBoardImages } from '../interfaces/interface';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { ImageLike } from '../interfaces/interface';
 import { boardComment,MemberAndCommentInfoDTO } from '../interfaces/interface';
 import {GetComment} from '../Service/comment.service';
-
+import { SignalrService } from '../Service/signalR.service';
 
 
 @Component({
   selector: 'app-get-images',
   templateUrl: './share.component.html',
-  styleUrl: './share.component.css'
+  styleUrls: ['./share.component.css'] 
 })
 export class ShareComponent implements OnInit {
 
@@ -44,6 +44,7 @@ public commentInfo : MemberAndCommentInfoDTO ={
   memberId:0, 
   comment:'' 
 }
+groupImages : IImageLikeCountDTO[] = [];
 buttonTextMap: { [key: number]: string } = {};
 public tempComment: { name: string|null; comment: string ,shareBoardId :number }[] = []; 
 
@@ -55,13 +56,29 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
 
   public likedImageArr : ImageLike[] = [];
   public liked = false;
-  constructor(private auth: AuthService,private image : GetImage,private comments : GetComment, private titleService: Title,private router : Router) {
+  constructor(private auth: AuthService,private image : GetImage,private comments : GetComment, private titleService: Title,private router : Router,private signalrService: SignalrService) {
     this.isCommented = new Array(this.memberImages.length).fill(false);
     
   }  
 
   ngOnInit(): void {  
-   
+    
+    this.signalrService.startConnection();
+    this.signalrService.listenForLikeCountUpdate();
+    this.signalrService.likeCount$.subscribe((likeCounts) => {
+      this.groupImages = likeCounts;      
+     
+    });
+    this.image.getLikes().subscribe({
+      next: (response) => {
+     this.groupImages = response;
+        console.log('Likes:', response);
+      },
+      error: (err) => {
+      
+        console.error('Error fetching likes:', err);
+      }
+    });
     this.memberId = sessionStorage.getItem('userId') || '';      
     this.getEveryComment();
     if(this.router.url.includes('Home'))
@@ -77,6 +94,16 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
      
     }      
     
+  }
+  public getLikeCount(shareBoardId: number): number {
+    // Filter the groupImages to find the matching shareBoardId
+
+    console.log('TES~~~',this.groupImages);
+    let likeData = this.groupImages.filter(g => g.shareBoardId === shareBoardId);
+  console.log(likeData);
+    // Return the total count of likes if found
+    // Assuming the total count of likes is in the 'totalCount' property
+    return likeData.length > 0 ? likeData[0].totalCount : 0;
   }
 
   private loadMemberImages(memberId: string): void {
@@ -140,7 +167,7 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
     });
 }
 
- public likeImage(image: ShareBoardImages,index:number): void {
+ public likeImage(image: ShareBoardImages): void {
    
  if(image.shareBoardId && this.memberId){
   this.addLike.shareBoardId = image.shareBoardId;
@@ -162,6 +189,16 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
           .forEach(i => i.likeImage = false); 
                     
       }
+      this.image.getLikes().subscribe({
+        next: (response) => {
+       this.groupImages = response;
+          console.log('Likes:', response);
+        },
+        error: (err) => {
+        
+          console.error('Error fetching likes:', err);
+        }
+      });
         
     },
     error: (error) => {

@@ -78,6 +78,10 @@ export interface IResult{
   isSuccess: boolean;
 
 }
+export interface IImageLikeCountDTO{
+  shareBoardId :number;
+  totalCount : number;
+}
 export interface boardComment{
   shareBoardId: number;
   memberId: number;

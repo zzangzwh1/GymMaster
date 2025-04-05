@@ -5,6 +5,7 @@ import { tap } from 'rxjs/operators';
 import {IResult, ShareBoardImages } from '../interfaces/interface';
 import { map } from 'rxjs/operators';
 import { ImageLike } from '../interfaces/interface';
+import { IImageLikeCountDTO } from '../interfaces/interface';
 
 
 
@@ -33,6 +34,11 @@ export class GetImage {
     public deleteImage(shareBoardId: number): Observable<ShareBoardImages> {
       return this.http.delete<ShareBoardImages>(`${this.dotnetImageUrl}Delete?shareBoardId=${shareBoardId}`);
     }
+    public getLikes(): Observable<IImageLikeCountDTO[]> {
+      return this.http.get<IImageLikeCountDTO[]>(`${this.dotnetImageUrl}likeCount`)
+       
+    }
+    
     
     
       
