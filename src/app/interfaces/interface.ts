@@ -70,8 +70,12 @@ export interface ShareBoardImages{
 }
 export interface ImageLike{
   shareBoardId: number;
-  memberId: number;
-  imageLike: number; 
+  userId: string;
+
+}
+export interface IResult{
+  message: string;
+  isSuccess: boolean;
 
 }
 export interface boardComment{

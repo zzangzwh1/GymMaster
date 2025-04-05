@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import "primeicons/primeicons.css";
 import { GetImage } from '../Service/images.service';
 import { AuthService } from '../Service/auth.service';
-import { Observable } from 'rxjs';
 import { ShareBoardImages } from '../interfaces/interface';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
@@ -25,9 +24,7 @@ export class ShareComponent implements OnInit {
   public test: number =0;  
   public addLike : ImageLike ={
     shareBoardId :0,
-    memberId : 0,
-    imageLike :0
-
+    userId : ''
   } 
   public getComments :boardComment[] =[];
   public comment : boardComment ={
@@ -64,6 +61,7 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
   }  
 
   ngOnInit(): void {  
+   
     this.memberId = sessionStorage.getItem('userId') || '';      
     this.getEveryComment();
     if(this.router.url.includes('Home'))
@@ -71,13 +69,14 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
       console.log('Current Home');
       this.isHome = true;
       this.loadCurrentMemberImages(this.memberId);
-      console.log('TESTING',this.memberImages);
+ 
     }
     else{
       this.titleService.setTitle('Share');
       this.loadMemberImages(this.memberId);
+     
     }      
-   
+    
   }
 
   private loadMemberImages(memberId: string): void {
@@ -87,16 +86,10 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
           console.log('No images found for this member.');
           this.memberImages = [];
         } else {
-          this.memberImages = images;            
-          this.auth.getMemberIdByUserID(memberId).subscribe(
-            (fetchedMemberId: string) => {
-              this.currentMemberId = fetchedMemberId;    
-              if (fetchedMemberId) {
-                this.likedImages(Number(fetchedMemberId));
-              }
-            },
-            (error) => this.handleError('Error fetching member ID', error)
-          );
+          this.memberImages = images; 
+           console.log(this.memberId);  
+           this.likedImages(memberId);
+      
         }
       },
       (error) => this.handleError('Error fetching images', error)
@@ -112,8 +105,8 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
            
               this.memberImages = [];            
             } else {           
-              this.memberImages = images;                                    
-              this.likedImages(Number(fetchedMemberId)) ;       
+              this.memberImages = images;                                       
+              this.likedImages(this.memberId) ;       
            
             }
           },
@@ -128,7 +121,7 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
   private handleError(message: string, error: any): void {
     console.error(message, error);
   }
-  private likedImages(memberId: number): void {
+  private likedImages(memberId: string): void {
     this.image.getlikedImages(memberId).subscribe({
         next: (likedImages) => {
       
@@ -147,42 +140,42 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
     });
 }
 
-  public likeImage(image: ShareBoardImages,index:number): void {
+ public likeImage(image: ShareBoardImages,index:number): void {
    
-    this.addLike.memberId = image.memberId;
-    this.addLike.shareBoardId = image.shareBoardId;
+ if(image.shareBoardId && this.memberId){
+  this.addLike.shareBoardId = image.shareBoardId;
+  this.addLike.userId = this.memberId;
 
-    if (this.memberImages[index].likeImage) {
-      this.memberImages[index].likeImage = false; 
-      this.addLike.imageLike = 0;
-      this.image.uploadImageLike(this.addLike).subscribe({
-        next: (response) => {         
-            console.log('Image uploaded successfully!', response);
-        },
-        error: (error) => {          
-            console.error('Image like upload failed:', error);
-            alert('Image like upload failed');
-        },
-        complete: () => {
-            console.log('Image like upload completed');
-        }
-    });      
-    } else {
-      this.addLike.imageLike = 1;
-      this.memberImages[index].likeImage = true;  
-      this.image.uploadImageLike(this.addLike).subscribe({
-        next: (response) => {
-            console.log('Image uploaded successfully!', response);             
-        },
-        error: (error) => {
-            console.error('Image like upload failed:', error);            
-        },
-        complete: () => {
-            console.log('Image like upload completed');
-        }
-    });
-    }   
-  } 
+  this.image.uploadImageLike(this.addLike).subscribe({
+    next: (response) => {
+     
+      console.log('Image liked successfully!', response);
+  
+     if (response.isSuccess && response.message ==='success') {      
+       const result=  this.memberImages
+          .filter(i => i.shareBoardId === image.shareBoardId)  
+          .forEach(i => i.likeImage = true); 
+               
+      } else {          
+        this.memberImages
+          .filter(i => i.shareBoardId === image.shareBoardId)  
+          .forEach(i => i.likeImage = false); 
+                    
+      }
+        
+    },
+    error: (error) => {
+      console.error('Image like upload failed:', error);
+     
+    }
+  });
+} else {
+  alert("Please log in to like an image!");
+}
+
+
+    
+}
   public toggleComments(image: ShareBoardImages, index: number): void { 
     this.isCommented[index] = !this.isCommented[index];
     console.log(image);

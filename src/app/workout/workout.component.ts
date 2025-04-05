@@ -39,16 +39,15 @@ export class WorkoutComponent implements OnInit {
   }
   public username :string|null ='';
   private workoutDataList: WorkoutSetDTO[] = [];
-
-  
-  private memberId :string= '';
+  maxDate: Date = new Date();
+ 
   constructor(
     private fb: FormBuilder, private auth : AuthService , private works : Workout, private router :Router
   ) {
     this.form = this.fb.group({
       exercise: ['', Validators.required], 
-      date: ['', Validators.required],      
-      time: ['', Validators.required]    
+      date: ['', Validators.required]     
+   
     });
   }
 

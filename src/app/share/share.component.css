@@ -31,6 +31,16 @@
   align-items: center;
   display: grid;
 }
+.card-img-top {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+
+.single-image .col-12 {
+  max-width:  100%; 
+}
 
 .boardComment {
    justify-content: center;

@@ -28,38 +28,20 @@ h2 {
   text-align: center;
   margin-bottom: 20px;
 }
-
-.inputBox {
-  position: relative;
-  
-}
-
-.inputBox input {
-  padding: 15px 20px;
+.input{
+  max-width: 190px;
+  padding: 0.875rem;
+  font-size: 1rem;
+  border: 1.5px solid #000;
+  border-radius: 0.5rem;
+  box-shadow: 2.5px 3px 0 rgb(16, 137, 211);
   outline: none;
-  background: transparent;
-  border-radius: 5px;
-  color: #212121;
-  border: 1px solid#212121;
-  font-size: 1em;
+  transition: ease 0.25s;
 }
 
-.inputBox span {
-  position: absolute;
-  left: 0;
-  font-size: 1em;
-  transform: translateX(14px) translateY(-7.5px);
-  padding: 0 6px 1px 5px;
-  border-radius: 2px;
-  background: #e8e8e8;
-  letter-spacing: 1px;
-  border: 1px solid #212121;
-  color: #212121;
+.input:focus {
+  box-shadow: 5.5px 7px 0 rgb(16, 137, 211);
 }
-.inputContainer{
-  padding: 0 100px ;
-}
-
 /* Button */
 
  .upload-button {
