@@ -17,12 +17,12 @@
         </div>
       
         <img [src]="image.profileImage" alt="Member Image {{ i + 1 }}" class="card-img-top img-fluid"/>
-
+<br>
         <div class="boardComment" *ngIf="isCommented[i]"> 
-          <div *ngIf="memberId !=''" class="d-flex align-items-center">
+          <div *ngIf="memberId !=''" class="d-flex align-items-center">            
             <label for="" id="currentMemberId" class="me-2">{{ memberId }}</label>
-            <input type="text" id="commentText" #commentInput class="form-control w-75 me-2" placeholder="Add comments"  [(ngModel)]="commentText" />
-            <button class="btn btn-outline-primary" (click)="addComment(commentInput.value, image)">Add</button>
+            <input type="text" id="commentText" #commentInput class="form-control w-75 me-2" placeholder="Add comments"  />
+            <button class="btn btn-outline-primary" (click)="addComment(commentInput.value, image,commentInput)">Add</button>
           </div>          
       
           <div class="boardCommentText mt-3" *ngFor="let comment of getCommentInfos">
@@ -76,5 +76,10 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
+<div *ngIf="isLoading" class="spinner-overlay">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
   </div>
 </div>

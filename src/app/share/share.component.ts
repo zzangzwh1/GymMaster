@@ -56,7 +56,7 @@ commentText = '';
 groupImages : IImageLikeCountDTO[] = [];
 buttonTextMap: { [key: number]: string } = {};
 public tempComment: { name: string|null; comment: string ,shareBoardId :number }[] = []; 
-
+isLoading :boolean = false;
 
   public isCommented: boolean[] = [];
   public isVisible : boolean[] = [];
@@ -71,24 +71,27 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
   }  
 
   ngOnInit(): void {      
-   
+ 
     this.signalR();
     console.log('TES~~~~');
     this.memberId = sessionStorage.getItem('userId') || '';      
-    this.getEveryComment();
+   
     if(this.router.url.includes('Home'))
     {
+    
       console.log('Current Home');
       this.isHome = true;
       this.loadCurrentMemberImages(this.memberId);
  
     }
     else{
+   
       this.titleService.setTitle('Share');
       this.loadMemberImages(this.memberId);
      
     }      
-    
+    this.getEveryComment();
+
   }
 
 
@@ -134,8 +137,6 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
       }
     });
   }
-
-
 
 
   startEdit(commentId: number): void {
@@ -189,6 +190,7 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
   }
 
   private loadMemberImages(memberId: string): void {
+    this.isLoading= true;
     this.image.getImages().subscribe(
       (images: ShareBoardImages[] | undefined) => {
         if (!images || images.length === 0) {
@@ -200,11 +202,15 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
            this.likedImages(memberId);
       
         }
+        this.isLoading= false;
       },
       (error) => this.handleError('Error fetching images', error)
+      
     );  
+   // this.isLoading= false;
   }
   private loadCurrentMemberImages(memberId: string): void {
+    this.isLoading= true;
     this.auth.getMemberIdByUserID(memberId).subscribe(
       (fetchedMemberId: string) => {
         this.currentMemberId = fetchedMemberId;
@@ -218,12 +224,14 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
               this.likedImages(this.memberId) ;       
            
             }
+            this.isLoading= false;
           },
           (error) => this.handleError('Error fetching images', error)
         );
       },
       (error) => this.handleError('Error fetching member ID', error)
     );
+    this.isLoading= false;
   }
   
 
@@ -298,12 +306,13 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
     console.log(image);
    
   }
-  public addComment(comment: string, image: ShareBoardImages): void {
+  public addComment(comment: string, image: ShareBoardImages,inputElement: HTMLInputElement): void {
 
     if (!comment.trim() || image.memberId <= 0 || image.shareBoardId <= 0) {
       console.warn('Invalid input: Comment text or IDs are missing or invalid.');
       return;
     }
+    console.log('inputElement',inputElement.value);
 
     // Create the boardComment object
     const boardComment: boardComment = {
@@ -321,7 +330,7 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
         const currentUser = sessionStorage.getItem('userId');
         this.commentText = '';
         this.getEveryComment();
-     
+        inputElement.value ='';
       },
       error: (error) => {
         console.error('Failed to add comment:', error);

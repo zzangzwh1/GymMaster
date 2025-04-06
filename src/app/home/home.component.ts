@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit {
     formData : null
  }
   public isLoggedIn :boolean =false;
-
+  isLoading = true;
   
   private dotnetMemberUrl = 'https://localhost:7298/api/Image/upload';
   constructor(
@@ -32,6 +32,7 @@ export class HomeComponent implements OnInit {
    
   }
   ngOnInit(): void {  
+    this.isLoading = false;
     this.username = sessionStorage.getItem('userId');      
  
   }

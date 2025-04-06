@@ -11,7 +11,7 @@ import { AuthService } from '../../Service/auth.service';
 })
 export class SignupComponent implements OnInit {
   loginForm!: FormGroup;
-
+  maxDate: string ='';
   constructor(
     private titleService: Title,
     private fb: FormBuilder,
@@ -23,6 +23,8 @@ export class SignupComponent implements OnInit {
 
   ngOnInit(): void {
     this.loginForm = this.createForm();
+    const today = new Date();
+    this.maxDate = today.toISOString().split('T')[0]; 
   }
 
   createForm(): FormGroup {
@@ -65,7 +67,7 @@ export class SignupComponent implements OnInit {
     if (this.loginForm.valid) {
       this.authService.checkUserExists(this.loginForm.value.userId).subscribe({
         next: () => {         
-          console.log('UserID Already Exists');
+          alert('UserID is Already Exists please Try Again!');
         },
         error: (err) => {
           if (err.status === 404) {
@@ -73,7 +75,7 @@ export class SignupComponent implements OnInit {
             this.authService.register(this.loginForm.value).subscribe({
               next: (response) => {
                 console.log('Registered successfully:', response);
-                alert(this.loginForm.value.userId +'is successfully created!');
+                alert(this.loginForm.value.userId +'  is successfully created!');
                 this.router.navigate(['/Authentication']);
                
               },

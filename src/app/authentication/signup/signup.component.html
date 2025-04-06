@@ -72,7 +72,7 @@
 
       <div class="form-group custom_form_group">
         <span class="signupLabel"><a>Select Birth Date</a></span>
-        <input required class="input" type="date" formControlName="birthDate" id="bDate">
+        <input required class="input" type="date" formControlName="birthDate" id="bDate" [max]="maxDate" >
         <div *ngIf="isFieldInvalid('birthDate')" class="error-message">
           Birth Date is required.
         </div>
