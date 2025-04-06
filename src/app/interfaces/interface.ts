@@ -84,7 +84,7 @@ export interface IImageLikeCountDTO{
 }
 export interface boardComment{
   shareBoardId: number;
-  memberId: number;
+  memberId: string;
   comment :string
 }
 export interface MemberAndCommentInfoDTO {
@@ -97,6 +97,7 @@ export interface MemberAndCommentInfoDTO {
   shareBoardId: number;
   memberId: number;
   comment: string;
+  boardCommentId :number;
 }
 export interface forgotPassword{
   userId:string;

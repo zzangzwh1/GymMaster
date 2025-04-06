@@ -5,6 +5,7 @@ import { MessageService } from 'primeng/api';
 import { HttpClient } from '@angular/common/http';
 import { UploadImage } from '../interfaces/interface';
 import { AuthService } from '../Service/auth.service';
+import { SignalrService } from '../Service/signalR.service';
 
 @Component({
   selector: 'app-home',
@@ -25,14 +26,14 @@ export class HomeComponent implements OnInit {
   
   private dotnetMemberUrl = 'https://localhost:7298/api/Image/upload';
   constructor(
-    private titleService: Title,private messageService: MessageService,private http: HttpClient,private auth: AuthService
+    private titleService: Title,private messageService: MessageService,private http: HttpClient,private auth: AuthService ,private signalrService :SignalrService 
   ) { 
     titleService.setTitle('Home');
    
   }
   ngOnInit(): void {  
-    this.username = sessionStorage.getItem('userId') ;
-        
+    this.username = sessionStorage.getItem('userId');      
+ 
   }
   public onSelect(event: any) {
     const member: string =  sessionStorage.getItem('userId')|| ''; 
@@ -52,17 +53,18 @@ export class HomeComponent implements OnInit {
   }
   public onUpload() {
     if (this.selectedFile && this.currentMeberId !== '') {
+      
       const formData = new FormData();
       formData.append('image', this.selectedFile, this.selectedFile.name);
       formData.append('memberId', this.currentMeberId.toString());
   
      
       this.http.post(this.dotnetMemberUrl, formData, { responseType: 'text' }).subscribe({
-        next: (response : any) => {
-        
-          this.messageService.add({ severity: 'info', summary: 'Success', detail: response }); 
-        
+        next: (response : any) => {        
+          this.messageService.add({ severity: 'info', summary: 'Success', detail: response });        
+                 
           console.log('Response:', response);
+          window.location.reload();
         },
         error: (err) => {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'File Upload Failed' });
@@ -70,6 +72,7 @@ export class HomeComponent implements OnInit {
         }
       });
     }
+    
   }
   
  

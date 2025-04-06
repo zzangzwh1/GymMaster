@@ -12,7 +12,7 @@
   
   
 }
-.card-img-top{
+.card-img-top{ 
     height: 400px;
 }
    
@@ -45,7 +45,7 @@
 .boardComment {
    justify-content: center;
    text-align: center;
-    max-height: 100px; 
+    max-height: 200px; 
     overflow-y: auto; 
   
   }
@@ -62,9 +62,6 @@
 }
 #currentMemberId{
     font-size: 15px;
-}
-#commetnText{
-    width: 40%;
 }
 .btnDeleteDiv{
   text-align: right;

@@ -29,7 +29,7 @@ export class ShareComponent implements OnInit {
   public getComments :boardComment[] =[];
   public comment : boardComment ={
     shareBoardId :0,
-    memberId :0,
+    memberId :'',
     comment:''
   }
 public getCommentInfos : MemberAndCommentInfoDTO[] = [];
@@ -42,8 +42,10 @@ public commentInfo : MemberAndCommentInfoDTO ={
   phone: '',
   shareBoardId: 0,
   memberId:0, 
-  comment:'' 
+  comment:'',
+  boardCommentId :0 
 }
+commentText = '';
 groupImages : IImageLikeCountDTO[] = [];
 buttonTextMap: { [key: number]: string } = {};
 public tempComment: { name: string|null; comment: string ,shareBoardId :number }[] = []; 
@@ -53,7 +55,7 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
   public isVisible : boolean[] = [];
   public memberId :string ='';
   public isHome: boolean =false;
-
+  public editCommentId: number | null = null;
   public likedImageArr : ImageLike[] = [];
   public liked = false;
   constructor(private auth: AuthService,private image : GetImage,private comments : GetComment, private titleService: Title,private router : Router,private signalrService: SignalrService) {
@@ -61,24 +63,10 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
     
   }  
 
-  ngOnInit(): void {  
-    
-    this.signalrService.startConnection();
-    this.signalrService.listenForLikeCountUpdate();
-    this.signalrService.likeCount$.subscribe((likeCounts) => {
-      this.groupImages = likeCounts;      
-     
-    });
-    this.image.getLikes().subscribe({
-      next: (response) => {
-     this.groupImages = response;
-        console.log('Likes:', response);
-      },
-      error: (err) => {
-      
-        console.error('Error fetching likes:', err);
-      }
-    });
+  ngOnInit(): void {      
+   
+    this.signalR();
+    console.log('TES~~~~');
     this.memberId = sessionStorage.getItem('userId') || '';      
     this.getEveryComment();
     if(this.router.url.includes('Home'))
@@ -95,14 +83,80 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
     }      
     
   }
-  public getLikeCount(shareBoardId: number): number {
-    // Filter the groupImages to find the matching shareBoardId
 
-    console.log('TES~~~',this.groupImages);
+
+  signalR():void {
+    this.signalrService.startConnection();
+    this.signalrService.listenForLikeCountUpdate();
+
+    this.signalrService.startCommentHubConnection();
+    this.signalrService.listenForCommentUpdate();
+
+    
+    this.signalrService.startImageConnection();
+    this.signalrService.listenForImage();
+
+    this.signalrService.image$.subscribe(images =>{
+      this.memberImages = images;
+      console.log('NEW IMAGES~~~~~',this.memberImages);
+    })
+    this.signalrService.likeCount$.subscribe((likeCounts) => {
+      this.groupImages = likeCounts;      
+     
+    });
+  
+    this.signalrService.comment$.subscribe(comment => {
+      console.log('New comment received:', comment);
+      // Push to your comments array or update the UI
+    this.getCommentInfos = comment;
+    console.log(' this.signalrService.comment$',this.getCommentInfos);
+    });
+    this.signalrService.image$.subscribe(images =>{
+      this.memberImages = images;
+      console.log('NEW IMAGES~~~~~',this.memberImages);
+    })
+
+    this.image.getLikes().subscribe({
+      next: (response) => {
+     this.groupImages = response;
+        console.log('Likes:', response);
+      },
+      error: (err) => {
+      
+        console.error('Error fetching likes:', err);
+      }
+    });
+  }
+
+
+
+
+  startEdit(commentId: number): void {
+    this.editCommentId = commentId;  
+  }
+
+  saveEdit(comment: any, text :string): void {
+    console.log('Saving comment:', comment);
+    console.log('TEXT',text);
+    this.editCommentId = null; 
+  }
+
+  cancelEdit(): void {
+    this.editCommentId = null; // Reset the edit mode
+  }
+
+  deleteComment(commentId: string): void {   
+    console.log('Deleting comment with ID:', commentId);
+  }
+  toLowerCase(text:string):string{
+    return text.toLocaleLowerCase();
+  }
+  
+
+  public getLikeCount(shareBoardId: number): number {
+
     let likeData = this.groupImages.filter(g => g.shareBoardId === shareBoardId);
-  console.log(likeData);
-    // Return the total count of likes if found
-    // Assuming the total count of likes is in the 'totalCount' property
+
     return likeData.length > 0 ? likeData[0].totalCount : 0;
   }
 
@@ -120,7 +174,7 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
         }
       },
       (error) => this.handleError('Error fetching images', error)
-    );
+    );  
   }
   private loadCurrentMemberImages(memberId: string): void {
     this.auth.getMemberIdByUserID(memberId).subscribe(
@@ -192,7 +246,7 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
       this.image.getLikes().subscribe({
         next: (response) => {
        this.groupImages = response;
-          console.log('Likes:', response);
+        
         },
         error: (err) => {
         
@@ -209,8 +263,6 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
 } else {
   alert("Please log in to like an image!");
 }
-
-
     
 }
   public toggleComments(image: ShareBoardImages, index: number): void { 
@@ -224,22 +276,23 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
       console.warn('Invalid input: Comment text or IDs are missing or invalid.');
       return;
     }
-  
+
     // Create the boardComment object
     const boardComment: boardComment = {
       comment: comment, 
-      memberId: image.memberId,
+      memberId: this.memberId,
       shareBoardId: image.shareBoardId
     };
   
-    // Make the API call to add the comment
+    
     this.comments.addComment(boardComment).subscribe({
-      next: (response) => {
-        console.log('Comment added successfully:', response);
+      next: (response) => {        
         let commentText = document.getElementById('commentText') as HTMLInputElement;      
         commentText.value = '';
         const currentUser = sessionStorage.getItem('userId');
-        this.tempComment.push({name:currentUser,comment:comment, shareBoardId:image.shareBoardId});
+        this.getEveryComment();
+        this.commentText = '';
+     
       },
       error: (error) => {
         console.error('Failed to add comment:', error);
@@ -255,7 +308,7 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
       this.comments.getCommentsAndMemberInfo().subscribe({
         next: (comments: MemberAndCommentInfoDTO[]) => {         
             this.getCommentInfos = comments;
-            console.log(`comments TEST: ${comments} `);
+           console.log('~~~~~~~~~~~~~~~', this.getCommentInfos);
         },
         error: (error) => {
           console.error('Error fetching comments:', error);

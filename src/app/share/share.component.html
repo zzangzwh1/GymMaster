@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <div class="row justify-content-center" [ngClass]="{'single-image': memberImages.length === 1}">
     <div      
-      class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" 
+      class="col-12 col-sm-6 col-md-6 col-lg-4 mb-4"
       *ngFor="let image of memberImages; let i = index"
     >
       <div class="card shadow-sm h-100">
@@ -21,31 +21,44 @@
         <div class="boardComment" *ngIf="isCommented[i]"> 
           <div *ngIf="memberId !=''" class="d-flex align-items-center">
             <label for="" id="currentMemberId" class="me-2">{{ memberId }}</label>
-            <input type="text" id="commentText" #commentInput class="form-control w-75 me-2" placeholder="Add comments" />
+            <input type="text" id="commentText" #commentInput class="form-control w-75 me-2" placeholder="Add comments"  [(ngModel)]="commentText" />
             <button class="btn btn-outline-primary" (click)="addComment(commentInput.value, image)">Add</button>
+          </div>          
+      
+          <div class="boardCommentText mt-3" *ngFor="let comment of getCommentInfos">
+            <div *ngIf="image.shareBoardId === comment.shareBoardId" class="d-flex align-items-center justify-content-between w-100">
+          
+              <!-- User ID -->
+              <span style="color: blue; min-width: 100px;">{{ comment.userId }}:</span>
+          
+              <!-- Comment Text or Edit Box -->
+              <div class="flex-grow-1 mx-2">
+                <ng-container *ngIf="editCommentId === comment.boardCommentId; else viewMode">
+                  <input type="text" class="form-control" [(ngModel)]="comment.comment" />
+                </ng-container>
+                <ng-template #viewMode>
+                  <p class="mb-0" style="max-width: 260px;">{{ comment.comment }}</p>
+                </ng-template>
+              </div>
+          
+              <!-- Action Buttons -->
+              <div style="min-width: 160px;" class="text-end" *ngIf="memberId?.toLowerCase() === comment.userId?.toLowerCase()">
+                <ng-container *ngIf="editCommentId === comment.boardCommentId; else actionButtons">
+                  <button class="btn btn-sm btn-success me-1" (click)="saveEdit(comment.boardCommentId,comment.comment)">Save</button>
+                  <button class="btn btn-sm btn-secondary" (click)="cancelEdit()">Cancel</button>
+                </ng-container>
+                <ng-template #actionButtons>
+                  <button class="btn btn-sm btn-outline-primary me-1" (click)="startEdit(comment.boardCommentId)">Edit</button>
+                  <button class="btn btn-sm btn-outline-danger" (click)="(comment.boardCommentId)">Delete</button>
+                </ng-template>
+              </div>
+          
+            </div>
           </div>
           
-          <div *ngIf="tempComment.length > 0">
-            <div *ngFor="let comment of tempComment">
-              <div class="d-flex justify-content-between align-items-center mt-3" *ngIf="comment.shareBoardId === image.shareBoardId">
-                <div class="boardCommentText">
-                  <span class="text-muted">{{ comment.name }}</span>
-                </div>
-                <div class="flex-grow-1 text-center">
-                  <p class="mb-0">{{ comment.comment }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="boardCommentText mt-3" *ngFor="let comment of getCommentInfos">
-            <div *ngIf="image.shareBoardId === comment.shareBoardId" class="d-flex justify-content-between align-items-center">
-              <span class="text-muted">{{ comment.userId }}</span>
-              <div class="flex-grow-1 text-center">
-                <p class="mb-0">{{ comment.comment }}</p>
-              </div>
-            </div>
-          </div>
+          
+          
+          
         </div>
 
         <div class="card-body">
