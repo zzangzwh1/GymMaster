@@ -38,6 +38,7 @@ export class GetImage {
       return this.http.get<IImageLikeCountDTO[]>(`${this.dotnetImageUrl}likeCount`)
        
     }
+   
     
     
     

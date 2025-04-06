@@ -83,6 +83,7 @@ export interface IImageLikeCountDTO{
   totalCount : number;
 }
 export interface boardComment{
+  boardCommentId:number;
   shareBoardId: number;
   memberId: string;
   comment :string

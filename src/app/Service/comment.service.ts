@@ -25,8 +25,14 @@ export class GetComment {
       return this.http.get<MemberAndCommentInfoDTO[]>(`${this.dotnetImageUrl}GetComments`)
 
     }
-      
-   
+    public editComment(comment: boardComment): Observable<any> {
+      const url = `${this.dotnetImageUrl}${comment.boardCommentId}`; 
+      return this.http.put(url, comment);
+    }
+    public deleteComment(boardCommendId: number): Observable<any> {
+      const url = `${this.dotnetImageUrl}delete/${boardCommendId}`; 
+      return this.http.put(url, {});
+    }
   
   }
   

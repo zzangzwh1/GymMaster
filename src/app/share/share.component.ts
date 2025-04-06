@@ -28,6 +28,13 @@ export class ShareComponent implements OnInit {
   } 
   public getComments :boardComment[] =[];
   public comment : boardComment ={
+    boardCommentId :0,
+    shareBoardId :0,
+    memberId :'',
+    comment:''
+  }
+  updateComment : boardComment = {
+    boardCommentId :0,
     shareBoardId :0,
     memberId :'',
     comment:''
@@ -135,9 +142,22 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
     this.editCommentId = commentId;  
   }
 
-  saveEdit(comment: any, text :string): void {
-    console.log('Saving comment:', comment);
+  saveEdit(commentId: number, text :string): void {
+    console.log('Saving comment:', commentId);
     console.log('TEXT',text);
+   this.updateComment.boardCommentId = commentId;
+   this.updateComment.comment = text;
+
+   this.comments.editComment(this.updateComment).subscribe({
+    next :(response) =>{
+      console.log('this.comments.editComment(this.updateComment).subscrib',response.isSuccess);
+      this.getEveryComment();
+    },error :()=>{
+      console.log('Fail!');
+    }
+  
+   })
+
     this.editCommentId = null; 
   }
 
@@ -145,8 +165,16 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
     this.editCommentId = null; // Reset the edit mode
   }
 
-  deleteComment(commentId: string): void {   
-    console.log('Deleting comment with ID:', commentId);
+  deleteComment(commentId: number): void {   
+    this.comments.deleteComment(commentId).subscribe({
+      next :(response) =>{
+        console.log('this.comments.editComment(this.DeleteComment).subscrib',response.isSuccess);
+        this.getEveryComment();
+      },error :()=>{
+        console.log('Fail!');
+      }
+    
+  })
   }
   toLowerCase(text:string):string{
     return text.toLocaleLowerCase();
@@ -279,6 +307,7 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
 
     // Create the boardComment object
     const boardComment: boardComment = {
+      boardCommentId :0,
       comment: comment, 
       memberId: this.memberId,
       shareBoardId: image.shareBoardId
@@ -290,17 +319,13 @@ public tempComment: { name: string|null; comment: string ,shareBoardId :number }
         let commentText = document.getElementById('commentText') as HTMLInputElement;      
         commentText.value = '';
         const currentUser = sessionStorage.getItem('userId');
-        this.getEveryComment();
         this.commentText = '';
+        this.getEveryComment();
      
       },
       error: (error) => {
         console.error('Failed to add comment:', error);
        
-      },
-      complete: () => {
-        console.log('Add Comment operation completed.');
-    
       }
     });
   }
