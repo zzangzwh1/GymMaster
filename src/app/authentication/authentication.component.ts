@@ -59,7 +59,9 @@ export class AuthenticationComponent {
         },
         error => { 
           this.isLoading =false;
-            alert('User not exists please try again!');
+            alert('Sorry, USERID is not exists please try again!');
+            this.loginInfo.userId = '';
+            this.loginInfo.password = '';
           console.error('Error checking user existence:', error);
           // Handle error
         }

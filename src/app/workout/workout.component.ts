@@ -158,7 +158,7 @@ export class WorkoutComponent implements OnInit {
         next: (response) => {
             console.log('Insert successful:', response);
             alert('Workout Successfully Updated!');
-            window.location.reload();
+            this.router.navigate(['/Home']);       
         },
         error: (error) => {
            
@@ -172,7 +172,7 @@ export class WorkoutComponent implements OnInit {
             }
 
         }
-    });
+    });    
 }
   
 

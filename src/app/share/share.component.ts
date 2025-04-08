@@ -356,20 +356,22 @@ isLoading :boolean = false;
   }
   public deleteImage(image: ShareBoardImages): void {
     console.log('Delete Image', image);
-  
+
     // Call the deleteImage service method and subscribe to it
     this.image.deleteImage(image.shareBoardId).subscribe({
       next: (deletedShareBoard: ShareBoardImages) => {
         console.log('Deleted Image Response: ', deletedShareBoard);     
+        const index = this.memberImages.findIndex(i => i.shareBoardId === image.shareBoardId);
+        if (index !== -1) {
+          this.memberImages.splice(index, 1);
+        }
+        
       },
       error: (error) => {
         console.error('Error deleting image:', error);
-      },
-        complete: () => {
-        console.log('Delete operation completed.');
-        location.reload();
       }
     });
+    
   }
 
   
