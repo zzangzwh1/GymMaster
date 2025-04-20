@@ -73,22 +73,18 @@ isLoading :boolean = false;
   ngOnInit(): void {      
  
     this.signalR();
-    console.log('TES~~~~');
+    
     this.memberId = sessionStorage.getItem('userId') || '';      
    
     if(this.router.url.includes('Home'))
-    {
-    
-      console.log('Current Home');
+    { 
       this.isHome = true;
       this.loadCurrentMemberImages(this.memberId);
  
     }
-    else{
-   
+    else{   
       this.titleService.setTitle('Share');
-      this.loadMemberImages(this.memberId);
-     
+      this.loadMemberImages(this.memberId);     
     }      
     this.getEveryComment();
 
@@ -108,7 +104,6 @@ isLoading :boolean = false;
 
     this.signalrService.image$.subscribe(images =>{
       this.memberImages = images;
-      console.log('NEW IMAGES~~~~~',this.memberImages);
     })
     this.signalrService.likeCount$.subscribe((likeCounts) => {
       this.groupImages = likeCounts;      
@@ -116,24 +111,19 @@ isLoading :boolean = false;
     });
   
     this.signalrService.comment$.subscribe(comment => {
-      console.log('New comment received:', comment);
-      // Push to your comments array or update the UI
     this.getCommentInfos = comment;
-    console.log(' this.signalrService.comment$',this.getCommentInfos);
     });
     this.signalrService.image$.subscribe(images =>{
       this.memberImages = images;
-      console.log('NEW IMAGES~~~~~',this.memberImages);
     })
 
     this.image.getLikes().subscribe({
       next: (response) => {
-     this.groupImages = response;
-        console.log('Likes:', response);
+         this.groupImages = response;
+  
       },
       error: (err) => {
-      
-        console.error('Error fetching likes:', err);
+              console.error('Error fetching likes:', err);
       }
     });
   }
@@ -144,14 +134,12 @@ isLoading :boolean = false;
   }
 
   saveEdit(commentId: number, text :string): void {
-    console.log('Saving comment:', commentId);
-    console.log('TEXT',text);
+
    this.updateComment.boardCommentId = commentId;
    this.updateComment.comment = text;
 
    this.comments.editComment(this.updateComment).subscribe({
-    next :(response) =>{
-      console.log('this.comments.editComment(this.updateComment).subscrib',response.isSuccess);
+    next :(response) =>{   
       this.getEveryComment();
     },error :()=>{
       console.log('Fail!');
@@ -168,8 +156,7 @@ isLoading :boolean = false;
 
   deleteComment(commentId: number): void {   
     this.comments.deleteComment(commentId).subscribe({
-      next :(response) =>{
-        console.log('this.comments.editComment(this.DeleteComment).subscrib',response.isSuccess);
+      next :(response) =>{   
         this.getEveryComment();
       },error :()=>{
         console.log('Fail!');
@@ -265,9 +252,7 @@ isLoading :boolean = false;
 
   this.image.uploadImageLike(this.addLike).subscribe({
     next: (response) => {
-     
-      console.log('Image liked successfully!', response);
-  
+
      if (response.isSuccess && response.message ==='success') {      
        const result=  this.memberImages
           .filter(i => i.shareBoardId === image.shareBoardId)  
@@ -326,8 +311,7 @@ isLoading :boolean = false;
     this.comments.addComment(boardComment).subscribe({
       next: (response) => {        
         let commentText = document.getElementById('commentText') as HTMLInputElement;      
-        commentText.value = '';
-        const currentUser = sessionStorage.getItem('userId');
+        commentText.value = '';       
         this.commentText = '';
         this.getEveryComment();
         inputElement.value ='';

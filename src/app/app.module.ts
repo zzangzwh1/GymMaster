@@ -1,4 +1,4 @@
-import { NgModule,CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import { NgModule,CUSTOM_ELEMENTS_SCHEMA, isDevMode} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -31,6 +31,11 @@ import { MessageService } from 'primeng/api';
 import { HelperComponent } from './helper/helper.component';
 import { EditComponent } from './edit/edit.component';
 import { PasswordComponent } from './authentication/password/password.component';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { authReducer } from './store/auth/auth.reducer';
+import { AuthEffects } from './store/auth/auth.effects';
 
 
 @NgModule({
@@ -65,7 +70,10 @@ import { PasswordComponent } from './authentication/password/password.component'
     CommonModule,
     CardModule,
     FileUploadModule,
-    ToastModule
+    ToastModule,
+    StoreModule.forRoot({ auth: authReducer }),
+    EffectsModule.forRoot([AuthEffects]),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
 
    
   

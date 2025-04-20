@@ -32,7 +32,7 @@ export class PasswordComponent {
   ngOnInit(): void {}
   onUserIdChange(value: string): boolean {
     if (value == '') {
-      console.log('User ID is Required');
+     
       this.errorText = 'User ID is Required';
       return false;
     }
@@ -49,9 +49,7 @@ export class PasswordComponent {
           this.isUserExist = true;
           this.email = this.secureNumberAndEmail(response.email);
           this.phone = this.secureNumberAndEmail(response.phone);
-          console.log(this.email);
-          console.log(this.phone);
-          console.log('Member details:', response);
+
         },
         error: (errors) => {        
           this.errorText = 'User is not Exists Please Try Again!';
@@ -90,16 +88,12 @@ export class PasswordComponent {
       this.getPassword.selectedValue = this.selectedValue;
       this.getPassword.userId = this.userId;
       this.auth.requestPassword(this.getPassword).subscribe({
-        next: (response) => {
-          console.log('Success:', response);
+        next: (response) => {     
           alert("Your password has been sent to your email. Please check your inbox.");
           this.router.navigate(['/Authentication']);
         },
-        error: (err) => {
-          console.error('Error:', err);
-      
-            alert("An unexpected error occurred.");
-          
+        error: (err) => {        
+            alert("An unexpected error occurred.");          
         }
       });
     } else {
