@@ -38,6 +38,15 @@ export class GetImage {
       return this.http.get<IImageLikeCountDTO[]>(`${this.dotnetImageUrl}likeCount`)
        
     }
+    public getScrollDownImages(shareBoardId: number, page: number): Observable<ShareBoardImages[]> {
+      const url = `${this.dotnetImageUrl}getScrollDownImages?shareBoardId=${shareBoardId}&page=${page}`;
+      return this.http.get<ShareBoardImages[]>(url);
+    }
+    public getScrollUpImages(shareBoardId: number, page: number): Observable<ShareBoardImages[]> {
+      const url = `${this.dotnetImageUrl}getScrollUpImages?shareBoardId=${shareBoardId}&page=${page}`;
+      return this.http.get<ShareBoardImages[]>(url);
+    }
+     
    
     
     

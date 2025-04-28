@@ -81,5 +81,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1050; /* above modals */
+  z-index: 1050; 
 }
+.scroll-container {
+ height: 600px;
+  overflow-y: auto; 
+}
+
+/*
+.scroll-container::-webkit-scrollbar {
+  display: none; 
+}
+  */

@@ -62,7 +62,7 @@ export interface UploadImage{
 export interface ShareBoardImages{
   shareBoardId: number;
   memberId: number;
-  profileImage: string; // This should be a base64 string including the MIME type
+  profileImage: string; 
   likeImage?: boolean;
   creationDate: string;
   expirationDate: string;
