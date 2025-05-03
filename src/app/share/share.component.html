@@ -39,8 +39,7 @@
                   <p class="mb-0" style="max-width: 260px;">{{ comment.comment }}</p>
                 </ng-template>
               </div>
-          
-              <!-- Action Buttons -->
+                      
               <div style="min-width: 160px;" class="text-end" *ngIf="memberId?.toLowerCase() === comment.userId?.toLowerCase()">
                 <ng-container *ngIf="editCommentId === comment.boardCommentId; else actionButtons">
                   <button class="btn btn-sm btn-success me-1" (click)="saveEdit(comment.boardCommentId,comment.comment)">Save</button>

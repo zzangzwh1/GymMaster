@@ -81,8 +81,7 @@ isLoading :boolean = false;
  
     if(this.router.url.includes('Home'))
     { 
-      this.isHome = true;
-      console.log('CUrrent images  ~~~~~~~~~~~~~~~~~~~~',this.memberImages);
+      this.isHome = true;  
       this.loadCurrentMemberImages(this.memberId);
  
     }
@@ -147,7 +146,7 @@ isLoading :boolean = false;
    this.updateComment.boardCommentId = commentId;
    this.updateComment.comment = text;
    this.comments.editComment(this.updateComment).subscribe({
-    next :(response) =>{   
+    next :() =>{   
       this.getImageComments(this.memberImages);
     },error :()=>{
       console.log('Fail!');
@@ -159,12 +158,12 @@ isLoading :boolean = false;
   }
 
   cancelEdit(): void {
-    this.editCommentId = null; // Reset the edit mode
+    this.editCommentId = null; 
   }
 
   deleteComment(commentId: number): void {   
     this.comments.deleteComment(commentId).subscribe({
-      next :(response) =>{   
+      next :() =>{   
         this.getImageComments(this.memberImages);
       },error :()=>{
         console.log('Fail!');
@@ -273,7 +272,6 @@ isLoading :boolean = false;
 }
   public toggleComments(image: ShareBoardImages, index: number): void { 
     this.isCommented[index] = !this.isCommented[index];
-    console.log(image);
    
   }
   onScroll(): void {
@@ -337,8 +335,6 @@ isLoading :boolean = false;
       console.warn('Invalid input: Comment text or IDs are missing or invalid.');
       return;
     }
-    console.log('inputElement',inputElement.value);
-
     const boardComment: boardComment = {
       boardCommentId :0,
       comment: comment, 
@@ -395,9 +391,7 @@ isLoading :boolean = false;
       }
     });
     
-  }
-
-  
+  }  
   
 }
 
