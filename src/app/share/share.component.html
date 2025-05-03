@@ -28,10 +28,9 @@
           <div class="boardCommentText mt-3" *ngFor="let comment of getCommentInfos">
             <div *ngIf="image.shareBoardId === comment.shareBoardId" class="d-flex align-items-center justify-content-between w-100">
           
-              <!-- User ID -->
+          
               <span style="color: blue; min-width: 100px;">{{ comment.userId }}:</span>
           
-              <!-- Comment Text or Edit Box -->
               <div class="flex-grow-1 mx-2">
                 <ng-container *ngIf="editCommentId === comment.boardCommentId; else viewMode">
                   <input type="text" class="form-control" [(ngModel)]="comment.comment" />
@@ -54,10 +53,8 @@
               </div>
           
             </div>
-          </div>
-          
-          
-          
+          </div>        
+                    
           
         </div>
 

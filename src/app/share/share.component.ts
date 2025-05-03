@@ -9,7 +9,8 @@ import { ImageLike } from '../interfaces/interface';
 import { boardComment,MemberAndCommentInfoDTO } from '../interfaces/interface';
 import {GetComment} from '../Service/comment.service';
 import { SignalrService } from '../Service/signalR.service';
-
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-get-images',
@@ -17,7 +18,7 @@ import { SignalrService } from '../Service/signalR.service';
   styleUrls: ['./share.component.css'] 
 })
 export class ShareComponent implements OnInit {
-
+  private destroy$ = new Subject<void>();
   public currentMemberId : string = '';
   public memberImages : ShareBoardImages[] = [];
   public imageUrls: string[] = []; 
@@ -77,27 +78,26 @@ isLoading :boolean = false;
   ngOnInit(): void {     
      this.signalR();    
     this.memberId = sessionStorage.getItem('userId') || '';     
-   
+ 
     if(this.router.url.includes('Home'))
     { 
       this.isHome = true;
-      console.log('HOMETEST~');
-      this.canScroll = false;
+      console.log('CUrrent images  ~~~~~~~~~~~~~~~~~~~~',this.memberImages);
       this.loadCurrentMemberImages(this.memberId);
-
  
     }
     else{   
       this.titleService.setTitle('Share');
       this.canScroll= true;
-      this.memberImages.filter(i=> i.shareBoardId).length >0 ? this.currentImageShardBoardId = this.memberImages.filter(i=> i.shareBoardId).length -1 : 0      
-      console.log(' ngOnInit(): void {        this.currentImageShardBoardId ',this.currentImageShardBoardId)
+      this.memberImages.filter(i=> i.shareBoardId).length >0 ? this.currentImageShardBoardId = this.memberImages.filter(i=> i.shareBoardId).length -1 : 0     
       this.loadCurrentPageImages(this.currentImageShardBoardId ,this.page,this.memberId,true);
 
-    }     
-   // console.log(' ngOnInit():',   this.memberImages.filter(i=>i.shareBoardId)); 
-   // this.getEveryComment();
+    }   
 
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 
@@ -148,7 +148,7 @@ isLoading :boolean = false;
    this.updateComment.comment = text;
    this.comments.editComment(this.updateComment).subscribe({
     next :(response) =>{   
-      this.getEveryComment(this.memberImages);
+      this.getImageComments(this.memberImages);
     },error :()=>{
       console.log('Fail!');
     }
@@ -165,7 +165,7 @@ isLoading :boolean = false;
   deleteComment(commentId: number): void {   
     this.comments.deleteComment(commentId).subscribe({
       next :(response) =>{   
-        this.getEveryComment(this.memberImages);
+        this.getImageComments(this.memberImages);
       },error :()=>{
         console.log('Fail!');
       }
@@ -194,9 +194,8 @@ isLoading :boolean = false;
             } else {           
               this.memberImages = images;                                       
               this.likedImages(this.memberId);
-              this.getEveryComment(images);
-                     
-              console.log('loadCurrentMemberImages',this.memberImages);
+              this.getImageComments(images);                
+           
            
             }
             this.isLoading= false;
@@ -298,54 +297,41 @@ isLoading :boolean = false;
     }
   }
 
-  }
-  loadCurrentPageImages(shardBoardId: number, page: number, memberId:string,isScrollDown:boolean): Promise<void> {     
-    if(isScrollDown){
-      return  new Promise((resolve, reject) => {
-        this.image.getScrollDownImages(shardBoardId, page).subscribe({
-          next: (images) => {      
-            if(images.length>0){
-              this.memberImages = [...images];             
-              this.likedImages(memberId);    
-              this.getEveryComment(images);    
-              resolve();
-            }
-            else{
-              console.error('Error loading images', images);
-              reject();
-            }            
-          },
-          error: (err) => {
-            console.error('Error loading images', err);
-            reject();
-          }
-        });
+  } 
+  loadCurrentPageImages(shardBoardId: number, page: number, memberId: string, isScrollDown: boolean): Promise<void> {
+    if (this.isLoading) {     
+      return Promise.resolve();
+    }    
+    this.isLoading = true;  
+    return new Promise((resolve, reject) => {
+      const handleSuccess = (images: any[]) => {
+        if (images.length > 0) {
+          this.memberImages = [...images];
+          this.likedImages(memberId);
+          this.getImageComments(images);
+          resolve();
+        } else {
+          console.error('No images found', images);
+          reject();
+        }
+        this.isLoading = false;
+      
+      };  
+      const handleError = (err: any) => {
+        console.error('Error loading images', err);
+        this.isLoading = false;        
+        reject();
+      };  
+      const observable = isScrollDown
+        ? this.image.getScrollDownImages(shardBoardId, page)
+        : this.image.getScrollUpImages(shardBoardId, page);
+  
+      observable.pipe(takeUntil(this.destroy$)).subscribe({
+        next: handleSuccess,
+        error: handleError
       });
-    }
-    else{
-      return  new Promise((resolve, reject) => {
-        this.image.getScrollUpImages(shardBoardId, page).subscribe({
-          next: (images) => {   
-            console.log('getScrollUpImages',images);
-            if(images.length>0){
-              this.memberImages = [...images];             
-              this.likedImages(memberId);
-              this.getEveryComment(images);             
-              resolve();
-            }
-            else{
-              console.error('Error loading images', images);
-              reject();
-            }            
-          },
-          error: (err) => {
-            console.error('Error loading images', err);
-            reject();
-          }
-        });
-      });
-    }
-  }
+    });
+  }  
   public addComment(comment: string, image: ShareBoardImages,inputElement: HTMLInputElement): void {
     if (!comment.trim() || image.memberId <= 0 || image.shareBoardId <= 0) {
       console.warn('Invalid input: Comment text or IDs are missing or invalid.');
@@ -353,7 +339,6 @@ isLoading :boolean = false;
     }
     console.log('inputElement',inputElement.value);
 
-    // Create the boardComment object
     const boardComment: boardComment = {
       boardCommentId :0,
       comment: comment, 
@@ -367,7 +352,7 @@ isLoading :boolean = false;
         let commentText = document.getElementById('commentText') as HTMLInputElement;      
         commentText.value = '';       
         this.commentText = '';
-        this.getEveryComment(this.memberImages);
+        this.getImageComments(this.memberImages);
         inputElement.value ='';
       },
       error: (error) => {
@@ -376,7 +361,7 @@ isLoading :boolean = false;
       }
     });
   }
-  public getEveryComment(images:ShareBoardImages[]): void {   
+  public getImageComments(images:ShareBoardImages[]): void {   
       this.comments.getComments(images).subscribe({
         next: (comments: MemberAndCommentInfoDTO[]) => {         
             this.getCommentInfos = comments;
