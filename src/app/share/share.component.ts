@@ -185,12 +185,10 @@ isLoading :boolean = false;
     this.isLoading= true;
     this.facade.getMemberByUserId(userId);    
     this.facade.getMemberExistenceStatus().subscribe(
-      (memberRespone) => {
-        console.log('~~~~~~~~~~~~~~~~~~~~~~~~',memberRespone);
-        const member = memberRespone;
-        if(member !==null){
-          this.currentMemberId = member.userId;
-          this.image.getMemberImage(member.memberId).subscribe(
+      (memberRespone) => {   
+        if(memberRespone !==null && memberRespone.memberId >0 ){
+          this.currentMemberId = memberRespone.userId;
+          this.image.getMemberImage(memberRespone.memberId).subscribe(
             (images: ShareBoardImages[] | undefined) => {
               if (!images || images.length === 0) {        
              

@@ -49,7 +49,7 @@ export class PasswordComponent {
       this.facade.getMemberExistenceStatus().subscribe({
         next: (response) => {
           this.isUserExist = true;
-          if(response !== null){
+          if(response !== null && response.memberId >0){
             this.email = this.secureNumberAndEmail(response.email);
             this.phone = this.secureNumberAndEmail(response.phone);
           }

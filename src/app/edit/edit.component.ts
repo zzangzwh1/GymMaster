@@ -34,7 +34,7 @@ export class EditComponent {
         this.facade.getMemberExistenceStatus().subscribe({
           next: (response) => {
    
-            if(response !==null){
+            if(response !==null && response.memberId >0){
               this.storedMember = response; 
               console.log(this.storedMember);
     

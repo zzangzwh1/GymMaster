@@ -118,7 +118,7 @@ export class WorkoutComponent implements OnInit {
 
     this.facade.getUserExistenceStatus().subscribe(
       (member) => {   
-        if(member !== null){
+        if(member !==null && member.memberId >0){
           this.workoutDataList = [];
   
           for (let i = 0; i < this.productCount.length; i++) {

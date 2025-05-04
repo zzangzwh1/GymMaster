@@ -34,13 +34,10 @@ export class AuthenticationComponent {
     if (this.loginInfo.userId !== '' && this.loginInfo.password !== '') {
       this.isLoading = true;
 
-      console.log('TEST~~~',this.loginInfo.userId);
       this.facade.checkIfUserExists(this.loginInfo.userId);    
       this.facade.getUserExistenceStatus().subscribe({
         next : (exist) =>{
-          this.isLoading = false;
-  
-          console.log('Current exist~~',exist);
+          this.isLoading = false;  
           if (exist) {       
             this.isLoading = true;
             console.log(' if (exist)',this.loginInfo);

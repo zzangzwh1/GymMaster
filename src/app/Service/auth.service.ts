@@ -23,11 +23,6 @@ export class AuthService {
     return this.loggedIn.asObservable();
   }
 
- /* public checkUserExists(userId: string): Observable<MemberDTO> {
-    return this.http.get<MemberDTO>(
-      `${this.dotnetMemberUrl}/userId?userId=${userId}`
-    );
-  }*/
   public login(loginInfo: any): Observable<AuthResponse> {
     return this.http
       .post<AuthResponse>(`${this.dotnetMemberUrl}/authenticate`, loginInfo, {
