@@ -1,4 +1,4 @@
-<div *ngIf="username != null; else notLoggedIn">
+<div *ngIf="username !== ''; else notLoggedIn">
     <div>
         <app-my-chart></app-my-chart>
     </div>

@@ -8,6 +8,15 @@ export const selectAuthState = createFeatureSelector<AuthState>('auth');
 
 export const selectUserExists = createSelector(
   selectAuthState,
-  (state) => state.userExists
+  (state) => state.member
 );
+
+export const selectMember = createSelector(
+  selectAuthState,
+  (state) => state.member
+);
+
+
+
+
 

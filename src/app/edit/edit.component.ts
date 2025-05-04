@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { AuthService } from '../Service/auth.service';
 import { MemberDTO } from '../interfaces/interface';
+import { AuthFacade } from '../facade/auth.facade';
 
 
 
@@ -19,6 +20,7 @@ export class EditComponent {
         private fb: FormBuilder,     
         private router: Router,
         private auth :AuthService,    
+        private facade :AuthFacade
      ) {
           this.titleService.setTitle('Edit');
     }
@@ -28,13 +30,20 @@ export class EditComponent {
   
       if (userId !== null) {
       
-        this.auth.getMemberByUserName(userId).subscribe({
-          next: (response: MemberDTO) => {
-            console.log('Response Result:', response);
-            this.storedMember = response; 
-            console.log(this.storedMember);
-  
-            this.editUser = this.createForm(response); 
+        this.facade.getMemberByUserId(userId);
+        this.facade.getMemberExistenceStatus().subscribe({
+          next: (response) => {
+   
+            if(response !==null){
+              this.storedMember = response; 
+              console.log(this.storedMember);
+    
+              this.editUser = this.createForm(response); 
+            }
+            else{
+              console.error('Error occurred:');
+            }
+            
            // this.editUser.get('userId')?.disable(); 
           },
           error: (err) => {

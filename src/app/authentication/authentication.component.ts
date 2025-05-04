@@ -8,6 +8,7 @@ import { AuthState } from '../store/auth/auth.reducer';
 import { checkUserExists } from '../store/auth/auth.actions';
 import { filter, take } from 'rxjs';
 import { selectUserExists } from '../store/auth/auth.selector';
+import { AuthFacade } from '../facade/auth.facade';
 
 @Component({
   selector: 'app-authentication',
@@ -24,34 +25,28 @@ export class AuthenticationComponent {
   isRegister :boolean  =false;
   isLoading :boolean =false;
   constructor(
-    private titleService: Title, private authService : AuthService, private router: Router,private store: Store<{ auth: AuthState }>
+    private titleService: Title, private authService : AuthService, private router: Router, private facade:AuthFacade
   ) { 
-    titleService.setTitle('Login');
-    
+    titleService.setTitle('Login');    
   }
 
   authentication() {
     if (this.loginInfo.userId !== '' && this.loginInfo.password !== '') {
       this.isLoading = true;
 
-      this.store.dispatch(
-        checkUserExists({ userId: this.loginInfo.userId })        
-      );
-  
-    
-      this.store
-        .select(selectUserExists)
-        .pipe(
-          filter((exists) => exists !== null), 
-          take(1)                            
-        )
-        .subscribe((exists) => {
+      console.log('TEST~~~',this.loginInfo.userId);
+      this.facade.checkIfUserExists(this.loginInfo.userId);    
+      this.facade.getUserExistenceStatus().subscribe({
+        next : (exist) =>{
           this.isLoading = false;
   
-          if (exists) {       
+          console.log('Current exist~~',exist);
+          if (exist) {       
             this.isLoading = true;
+            console.log(' if (exist)',this.loginInfo);
             this.authService.login(this.loginInfo).subscribe({
-              next: (response) => {;            
+              next: (response) => {
+                console.log('')          
                 sessionStorage.setItem('userId', this.loginInfo.userId);
        
                 this.isLoading = false;
@@ -65,11 +60,12 @@ export class AuthenticationComponent {
           } else {
             alert('Sorry, that User ID does not exist. Please try again!');
             this.loginInfo = { userId: '', password: '' };
+            this.isLoading = false;
           }
-        });
-  
-    } else {
-      console.log('Please fill in both User ID and Password.');
-    }
+        }
+      })
+
+      }
+
   }
 }

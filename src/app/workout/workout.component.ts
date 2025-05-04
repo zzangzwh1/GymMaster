@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup,Validators  } from '@angular/forms';
 import { combineLatest, Observable ,} from 'rxjs';
 import { startWith } from 'rxjs/operators';
 import { WorkoutData, WorkoutInfo, WorkoutSetDTO } from '../interfaces/interface';
-import { AuthService } from '../Service/auth.service';
+import { AuthFacade } from '../facade/auth.facade';
 import { Workout } from '../Service/workout.service';
 import { Router } from '@angular/router';
 @Component({
@@ -42,7 +42,7 @@ export class WorkoutComponent implements OnInit {
   maxDate: Date = new Date();
  
   constructor(
-    private fb: FormBuilder, private auth : AuthService , private works : Workout, private router :Router
+    private fb: FormBuilder,private facade : AuthFacade, private works : Workout, private router :Router
   ) {
     this.form = this.fb.group({
       exercise: ['', Validators.required], 
@@ -97,10 +97,8 @@ export class WorkoutComponent implements OnInit {
     const today = new Date();
     return new Date(today.getFullYear(), today.getMonth(), today.getDate());
   }
-  public countChange(products: any[]): void { 
-    console.log('~~@fsefs',products);
+  public countChange(products: any[]): void {   
     this.productCount= products;
-
   } 
 
   public UploadExercise(): void {
@@ -116,14 +114,16 @@ export class WorkoutComponent implements OnInit {
       return;
     }
   
-    this.auth.getMemberIdByUserID(userId).subscribe(
-      (memberId: string) => {
-          
+    this.facade.getMemberByUserId(userId);
+
+    this.facade.getUserExistenceStatus().subscribe(
+      (member) => {   
+        if(member !== null){
           this.workoutDataList = [];
   
           for (let i = 0; i < this.productCount.length; i++) {
             const workoutSet: WorkoutSetDTO = {
-              MemberId: Number(memberId), 
+              MemberId: member.memberId, 
               Part: this.parentWorkoutData.selectPart || '',
               SetCount: this.productCount[i].setCount,
               RepCount: this.productCount[i].repCount,
@@ -137,6 +137,11 @@ export class WorkoutComponent implements OnInit {
               this.workoutDataList.push(workoutSet);
             }
             this.insertWorkoutData(this.workoutDataList);
+        }  
+        else{
+          console.error('Error fetching member ID:');
+        }     
+  
       },
       (error) => {
           console.error('Error fetching member ID:', error);
@@ -146,8 +151,6 @@ export class WorkoutComponent implements OnInit {
   private formatDate(date: Date): string {
     return date.toISOString().split('T')[0]; 
 }
-
-
 
   public insertWorkoutData(workoutSet: WorkoutSetDTO[]): void {
     

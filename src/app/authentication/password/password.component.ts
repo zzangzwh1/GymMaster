@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { AuthService } from '../../Service/auth.service';
 import { MemberDTO, forgotPassword } from '../../interfaces/interface';
 import { Router } from '@angular/router';
-
+import { AuthFacade } from '../../facade/auth.facade';
+import { AuthService } from '../../Service/auth.service';
 @Component({
   selector: 'app-password',
   templateUrl: './password.component.html',
@@ -24,7 +24,7 @@ export class PasswordComponent {
   };
   public selcetedOption: string = '';
 
-  constructor(private titleService: Title, private auth: AuthService,private router :Router) {
+  constructor(private titleService: Title,private router :Router,private facade: AuthFacade, private auth : AuthService) {
     this.titleService.setTitle('Forgot Password');
   }
   errorText: string = '';
@@ -44,14 +44,21 @@ export class PasswordComponent {
 
   public searchUser() {
     if (this.onUserIdChange(this.userId)) {
-      this.auth.getMemberByUserName(this.userId).subscribe({
-        next: (response: MemberDTO) => {
+      this.facade.getMemberByUserId(this.userId);
+
+      this.facade.getMemberExistenceStatus().subscribe({
+        next: (response) => {
           this.isUserExist = true;
-          this.email = this.secureNumberAndEmail(response.email);
-          this.phone = this.secureNumberAndEmail(response.phone);
+          if(response !== null){
+            this.email = this.secureNumberAndEmail(response.email);
+            this.phone = this.secureNumberAndEmail(response.phone);
+          }
+          else{
+            this.errorText = 'User is not Exists Please Try Again!';
+          }
 
         },
-        error: (errors) => {        
+        error: () => {        
           this.errorText = 'User is not Exists Please Try Again!';
         },
       });

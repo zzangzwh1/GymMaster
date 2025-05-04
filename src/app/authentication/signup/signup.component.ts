@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { AuthService } from '../../Service/auth.service';
+import { AuthFacade } from '../../facade/auth.facade';
 
 @Component({
   selector: 'app-signup',
@@ -12,13 +13,17 @@ import { AuthService } from '../../Service/auth.service';
 export class SignupComponent implements OnInit {
   loginForm!: FormGroup;
   maxDate: string ='';
+
   constructor(
     private titleService: Title,
     private fb: FormBuilder,
-    private authService: AuthService, 
-    private router: Router
+    private router: Router,
+    private facade : AuthFacade,
+    private authService : AuthService
+
   ) {
     this.titleService.setTitle('Sign Up');
+
   }
 
   ngOnInit(): void {
@@ -65,35 +70,35 @@ export class SignupComponent implements OnInit {
 
   onSubmit() {
     if (this.loginForm.valid) {
-      this.authService.checkUserExists(this.loginForm.value.userId).subscribe({
-        next: () => {         
-          alert('UserID is Already Exists please Try Again!');
-        },
-        error: (err) => {
-          if (err.status === 404) {
-           
-            this.authService.register(this.loginForm.value).subscribe({
-              next: (response) => {
-                console.log('Registered successfully:', response);
-                alert(this.loginForm.value.userId +'  is successfully created!');
-                this.router.navigate(['/Authentication']);
-               
-              },
-              error: (error) => {
-                console.error('Registration failed:', error);
-               
-              }
-            });
-          } else {           
-            console.error('An error occurred:', err);
-          }
+      const userId = this.loginForm.value.userId;  
+
+     this.facade.checkIfUserExists(userId);  
+     this.facade.getUserExistenceStatus().subscribe({
+      next: (member) => {
+        if(member != null && member.userId.toLowerCase() === userId.toLocaleLowerCase())    {
+          alert('User ID already exists!');
+        } 
+        else{
+          this.authService.register(this.loginForm.value).subscribe({
+            next: (response) => {             
+              alert(`${userId} is successfully created!`);
+              this.router.navigate(['/Authentication']);
+            },
+            error: (error) => {
+              alert(`Regisster Failed!`);
+            }
+            
+          });
         }
-      });
-    } else {
-      console.log('Form is invalid');
-      this.loginForm.markAllAsTouched(); 
+        
+      },
+      error : () =>{
+        alert(`Regisster Failed!`);
+      }
+    });
+    
     }
-  }
+  } 
 
   // Method to check form control validation status
   isFieldInvalid(field: string): boolean | null{

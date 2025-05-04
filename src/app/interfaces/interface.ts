@@ -7,6 +7,7 @@ export interface Login{
     message?: string;
   }
   export interface MemberDTO {
+    memberId :number;
     userId: string;
     password?: string; 
     sex: string;

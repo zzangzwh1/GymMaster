@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import "primeicons/primeicons.css";
 import { GetImage } from '../Service/images.service';
-import { AuthService } from '../Service/auth.service';
 import {  IImageLikeCountDTO, ShareBoardImages } from '../interfaces/interface';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
@@ -11,6 +10,7 @@ import {GetComment} from '../Service/comment.service';
 import { SignalrService } from '../Service/signalR.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { AuthFacade } from '../facade/auth.facade';
 
 @Component({
   selector: 'app-get-images',
@@ -70,7 +70,7 @@ isLoading :boolean = false;
   public likedImageArr : ImageLike[] = [];
   public liked = false;
   public canScroll = false;
-  constructor(private auth: AuthService,private image : GetImage,private comments : GetComment, private titleService: Title,private router : Router,private signalrService: SignalrService) {
+  constructor(private image : GetImage,private comments : GetComment, private titleService: Title,private router : Router,private signalrService: SignalrService,private facade :AuthFacade) {
     this.isCommented = new Array(this.memberImages.length).fill(false);
     
   }  
@@ -82,6 +82,7 @@ isLoading :boolean = false;
     if(this.router.url.includes('Home'))
     { 
       this.isHome = true;  
+      console.log('NGONGINT~~~~',this.memberId);
       this.loadCurrentMemberImages(this.memberId);
  
     }
@@ -180,27 +181,33 @@ isLoading :boolean = false;
     return likeData.length > 0 ? likeData[0].totalCount : 0;
   }
 
-  private loadCurrentMemberImages(memberId: string): void {
+  private loadCurrentMemberImages(userId: string): void {
     this.isLoading= true;
-    this.auth.getMemberIdByUserID(memberId).subscribe(
-      (fetchedMemberId: string) => {
-        this.currentMemberId = fetchedMemberId;
-          this.image.getMemberImage(Number(fetchedMemberId)).subscribe(
-          (images: ShareBoardImages[] | undefined) => {
-            if (!images || images.length === 0) {        
-           
-              this.memberImages = [];            
-            } else {           
-              this.memberImages = images;                                       
-              this.likedImages(this.memberId);
-              this.getImageComments(images);                
-           
-           
-            }
-            this.isLoading= false;
-          },
-          (error) => this.handleError('Error fetching images', error)
-        );
+    this.facade.getMemberByUserId(userId);    
+    this.facade.getMemberExistenceStatus().subscribe(
+      (memberRespone) => {
+        console.log('~~~~~~~~~~~~~~~~~~~~~~~~',memberRespone);
+        const member = memberRespone;
+        if(member !==null){
+          this.currentMemberId = member.userId;
+          this.image.getMemberImage(member.memberId).subscribe(
+            (images: ShareBoardImages[] | undefined) => {
+              if (!images || images.length === 0) {        
+             
+                this.memberImages = [];            
+              } else {           
+                this.memberImages = images;                                       
+                this.likedImages(this.memberId);
+                this.getImageComments(images);                
+             
+             
+              }
+              this.isLoading= false;
+            },
+            (error) => this.handleError('Error fetching images', error)
+          );
+        }       
+         
       },
       (error) => this.handleError('Error fetching member ID', error)
     );
