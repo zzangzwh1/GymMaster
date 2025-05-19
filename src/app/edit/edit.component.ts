@@ -25,9 +25,8 @@ export class EditComponent {
           this.titleService.setTitle('Edit');
     }
     ngOnInit(): void {
-      const userId = sessionStorage.getItem('userId') ?? null; 
-      console.log('USERID:', userId);
-  
+      const userId = localStorage.getItem('userId'); 
+ 
       if (userId !== null) {
       
         this.facade.getMemberByUserId(userId);
@@ -35,20 +34,16 @@ export class EditComponent {
           next: (response) => {
    
             if(response !==null && response.memberId >0){
-              this.storedMember = response; 
-              console.log(this.storedMember);
-    
+              this.storedMember = response;              
               this.editUser = this.createForm(response); 
             }
             else{
               console.error('Error occurred:');
             }
-            
-           // this.editUser.get('userId')?.disable(); 
+                     
           },
           error: (err) => {
-            console.error('Error occurred:', err);
-          
+            console.error('Error occurred:', err);          
           }
         });
       }
@@ -94,12 +89,9 @@ export class EditComponent {
     }  
  
    public onSubmit(): void {
-      if (this.editUser.valid) {
-        console.log('Form is valid!', this.editUser.value);
-
+      if (this.editUser.valid) {      
         this.auth.updateUserInfo( this.editUser.value).subscribe({
-          next: (updatedMember) => {
-            console.log('User info updated successfully:', updatedMember);  
+          next: (updatedMember) => {         
             alert('User info updated successfully');
           },
           error: (err) => {

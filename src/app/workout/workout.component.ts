@@ -52,7 +52,7 @@ export class WorkoutComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.username = sessionStorage.getItem('userId')
+    this.username = localStorage.getItem('userId')
    if(this.username !==null){  
     const exerciseControl = this.form.get('exercise');
     const dateControl = this.form.get('date');
@@ -108,7 +108,7 @@ export class WorkoutComponent implements OnInit {
       return;
     }
   
-    const userId = sessionStorage.getItem('userId');
+    const userId = localStorage.getItem('userId');
     if (!userId) {
       console.warn('User ID is not found in session storage.');
       return;

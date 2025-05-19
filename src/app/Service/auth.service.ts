@@ -30,8 +30,7 @@ export class AuthService {
       })
       .pipe(
         tap((response) => {
-          if (response.success) {
-            sessionStorage.setItem('userId', loginInfo.userId);
+          if (response.success) {           
             this.loggedIn.next(true);
           }
         })
@@ -41,11 +40,11 @@ export class AuthService {
     return this.http.post(`${this.dotnetMemberUrl}/register`, userInfo);
   }
   public logout(): void {
-    sessionStorage.removeItem('userId');
+    localStorage.removeItem('userId');
     this.loggedIn.next(false);
   }
   public checkLoginStatus(): void {
-    const userId = sessionStorage.getItem('userId');
+    const userId = localStorage.getItem('userId');
     this.loggedIn.next(userId !== null);
   }
   public getMemberByUserID(userId: string): Observable<MemberDTO> {   
@@ -53,9 +52,8 @@ export class AuthService {
       `${this.dotnetMemberUrl}/memberId?memberId=${userId}`
     );
   }
-  public updateUserInfo(member: MemberDTO): Observable<MemberDTO> {
-    
-    return this.http.post<MemberDTO>(`${this.dotnetMemberUrl}/edit`, member, {
+  public updateUserInfo(member: MemberDTO): Observable<MemberDTO> {   
+      return this.http.post<MemberDTO>(`${this.dotnetMemberUrl}/edit`, member, {
       headers: { 'Content-Type': 'application/json' }
     });
   }

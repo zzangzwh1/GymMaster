@@ -31,8 +31,7 @@ export class PasswordComponent {
   optionErroText: string = '';
   ngOnInit(): void {}
   onUserIdChange(value: string): boolean {
-    if (value == '') {
-     
+    if (value == '') {     
       this.errorText = 'User ID is Required';
       return false;
     }

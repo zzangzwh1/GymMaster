@@ -72,17 +72,17 @@ export interface ShareBoardImages{
 export interface ImageLike{
   shareBoardId: number;
   userId: string;
-
+  totalCount : number;
 }
 export interface IResult{
   message: string;
   isSuccess: boolean;
 
 }
-export interface IImageLikeCountDTO{
+/*export interface IImageLikeCountDTO{
   shareBoardId :number;
   totalCount : number;
-}
+}*/
 export interface boardComment{
   boardCommentId:number;
   shareBoardId: number;

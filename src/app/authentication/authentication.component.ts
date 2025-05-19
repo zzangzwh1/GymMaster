@@ -34,31 +34,20 @@ export class AuthenticationComponent {
     if (this.loginInfo.userId !== '' && this.loginInfo.password !== '') {
       this.isLoading = true;
 
-      this.facade.checkIfUserExists(this.loginInfo.userId);    
-      this.facade.getUserExistenceStatus().subscribe({
-        next : (exist) =>{
-          this.isLoading = false;  
-          if (exist) {       
-            this.isLoading = true;
-            console.log(' if (exist)',this.loginInfo);
-            this.authService.login(this.loginInfo).subscribe({
-              next: (response) => {
-                console.log('')          
-                sessionStorage.setItem('userId', this.loginInfo.userId);
-       
-                this.isLoading = false;
-                this.router.navigate(['/Home']);
-              },
-              error: (error) => {            
-                this.isLoading = false;
-                alert('Login Failed');
-              }
-            });
-          } else {
-            alert('Sorry, that User ID does not exist. Please try again!');
-            this.loginInfo = { userId: '', password: '' };
-            this.isLoading = false;
-          }
+      this.authService.login(this.loginInfo).subscribe({
+        next: (response) => {      
+          if(response.success && response.message){
+            localStorage.setItem('userId', this.loginInfo.userId);
+            localStorage.setItem('jwtToken',response.message);    
+            this.router.navigate(['/Home']);        
+          }     
+        
+          this.isLoading = false;
+          
+        },
+        error: (error) => {            
+          this.isLoading = false;
+          alert('Login Failed');
         }
       })
 

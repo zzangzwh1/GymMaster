@@ -14,7 +14,7 @@ Chart.register(...registerables);
 })
 export class MyChartComponent implements OnInit {
   public datas: any;
- public userId =  sessionStorage.getItem('userId');
+ public userId :string ='';
    
   public data: any;
   public chart: any;
@@ -23,6 +23,8 @@ export class MyChartComponent implements OnInit {
   constructor(private work: Workout, private getMemberWorkout: GetMemberWorkoutStatus) { }
 
   async ngOnInit(): Promise<void> {
+    this.userId = localStorage.getItem('userId') || '';
+
     try {
       await this.WorkoutStatus(); 
       await this.WorkoutTrack();

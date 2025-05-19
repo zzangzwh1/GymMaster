@@ -35,7 +35,8 @@ export class HomeComponent implements OnInit {
   }
   ngOnInit(): void {  
     this.isLoading = false;
-    this.username = sessionStorage.getItem('userId') || '';  
+    this.username = localStorage.getItem('userId') || '';  
+    console.log('TEST~~~~~~~~~~UserName LOcal Stroage',this.username);
   }
   public onSelect(event: any) {
 

@@ -36,6 +36,8 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { authReducer } from './store/auth/auth.reducer';
 import { AuthEffects } from './store/auth/auth.effects';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './interceptor/auth.interceptor';
 
 
 @NgModule({
@@ -79,7 +81,11 @@ import { AuthEffects } from './store/auth/auth.effects';
   
   ],
   providers: [
-    provideAnimationsAsync(),GetMemberWorkoutStatus,MessageService
+    provideAnimationsAsync(),GetMemberWorkoutStatus,MessageService , {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],  // Add this line
   bootstrap: [AppComponent]

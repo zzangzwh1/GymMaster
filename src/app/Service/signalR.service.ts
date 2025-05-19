@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
+import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { Subject } from 'rxjs';
-import {  IImageLikeCountDTO, MemberAndCommentInfoDTO,ShareBoardImages } from '../interfaces/interface';
+import {   ImageLike, MemberAndCommentInfoDTO,ShareBoardImages } from '../interfaces/interface';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ export class SignalrService {
   private hubConnection: HubConnection | undefined;
    private commentHub: HubConnection | undefined;
    private imageHub: HubConnection | undefined;
-  private likeCountSubject = new Subject<IImageLikeCountDTO[]>();  
+  private likeCountSubject = new Subject<ImageLike[]>();  
   private commentSubject = new Subject<MemberAndCommentInfoDTO[]>();
   private imageSubject = new Subject<ShareBoardImages[]>();
   public likeCount$ = this.likeCountSubject.asObservable();
@@ -18,64 +18,69 @@ export class SignalrService {
   public image$ = this.imageSubject.asObservable();
   constructor() { }
 
-  //Like Signal R
-  public startConnection(): void {
-    this.hubConnection = new HubConnectionBuilder()
-      .withUrl('https://localhost:7298/SHub')  
-      .build();
-
-    this.hubConnection.start()
-      .then(() => console.log('SignalR Connection Established'))
-      .catch((err) => console.error('Error establishing connection', err));
-  }
-
-
-  public listenForLikeCountUpdate(): void {
-    console.log('TEST~');
-    if (this.hubConnection) {
-      this.hubConnection.on('ReceiveLikeCountUpdate', (likeCounts: any) => {
-        this.likeCountSubject.next(likeCounts);  
-      });
+  private getToken(): string {
+    const token = localStorage.getItem('jwtToken');
+    if (!token) {
+      throw new Error('JWT token not found in local storage.');
     }
+    return token;
   }
-
-  //COmment Singal R
-  public startCommentHubConnection(): void {
-    this.commentHub = new HubConnectionBuilder()
-      .withUrl('https://localhost:7298/CommentHub')
+  private createHubConnection(url: string): HubConnection {
+    return new HubConnectionBuilder()
+      .withUrl(url, {
+        accessTokenFactory: () => this.getToken()
+      })
+      .withAutomaticReconnect()
+      .configureLogging(LogLevel.Information)
       .build();
-
-    this.commentHub.start()
-      .then(() => console.log('CommentHub connected'))
-      .catch((err) => console.error('CommentHub error:', err));
-  }
-  public listenForCommentUpdate(): void {
-    if (this.commentHub) {
-        console.log('listenForCommentUpdate~~~~~~~~~');
-      this.commentHub.on('ReceiveComment', (comment: any) => {
-        this.commentSubject.next(comment);
-      });
-    }
   }
 
-  //Image hub
-  public startImageConnection(): void {
-    this.imageHub = new HubConnectionBuilder()
-      .withUrl('https://localhost:7298/ImageHub')  
-      .build();
+ // SHub (Like count)
+ public startConnection(): void {
+  this.hubConnection = this.createHubConnection('https://localhost:7298/SHub');
 
-    this.imageHub.start()
-      .then(() => console.log('SignalR Connection Established'))
-      .catch((err) => console.error('Error establishing connection', err));
-  }
+  this.hubConnection
+    .start()
+    .then(() => console.log('SHub connected'))
+    .catch(err => console.error('SHub connection error:', err));
+}
 
+public listenForLikeCountUpdate(): void {
+  this.hubConnection?.on('ReceiveLikeCountUpdate', (likeCounts: ImageLike[]) => {
+    this.likeCountSubject.next(likeCounts);
+  });
+}
 
-  public listenForImage(): void {
-    console.log('TEST~');
-    if (this.imageHub) {
-      this.imageHub.on('ReceiveImage', (images: any) => {
-        this.imageSubject.next(images);  
-      });
-    }
-  }
+// CommentHub
+public startCommentHubConnection(): void {
+  this.commentHub = this.createHubConnection('https://localhost:7298/CommentHub');
+
+  this.commentHub
+    .start()
+    .then(() => console.log('CommentHub connected'))
+    .catch(err => console.error('CommentHub error:', err));
+}
+
+public listenForCommentUpdate(): void {
+  this.commentHub?.on('ReceiveComment', (comment: MemberAndCommentInfoDTO[]) => {
+    this.commentSubject.next(comment);
+  });
+}
+
+// ImageHub
+public startImageConnection(): void {
+  this.imageHub = this.createHubConnection('https://localhost:7298/ImageHub');
+
+  this.imageHub
+    .start()
+    .then(() => console.log('ImageHub connected'))
+    .catch(err => console.error('ImageHub connection error:', err));
+}
+
+public listenForImage(): void {
+  this.imageHub?.on('ReceiveImage', (images: ShareBoardImages[]) => {
+    this.imageSubject.next(images);
+  });
+}
+
 }

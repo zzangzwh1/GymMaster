@@ -72,10 +72,12 @@ export class SignupComponent implements OnInit {
     if (this.loginForm.valid) {
       const userId = this.loginForm.value.userId;  
 
+      console.log('TEST UserID',userId);
      this.facade.checkIfUserExists(userId);  
      this.facade.getUserExistenceStatus().subscribe({
       next: (member) => {
-        if(member != null && member.userId.toLowerCase() === userId.toLocaleLowerCase())    {
+        console.log('TESTMEMBER',member);
+        if(member?.userId !== null)    {
           alert('User ID already exists!');
         } 
         else{

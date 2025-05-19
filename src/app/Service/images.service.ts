@@ -5,7 +5,7 @@ import { tap } from 'rxjs/operators';
 import {IResult, ShareBoardImages } from '../interfaces/interface';
 import { map } from 'rxjs/operators';
 import { ImageLike } from '../interfaces/interface';
-import { IImageLikeCountDTO } from '../interfaces/interface';
+
 
 
 
@@ -28,22 +28,29 @@ export class GetImage {
     public uploadImageLike(imageData: ImageLike): Observable<IResult> {
       return this.http.post<IResult>(this.dotnetImageUrl +'uploadImageLike', imageData);
     }
-    public getlikedImages(member:string) : Observable<ImageLike[]>{      
+    public getLikedImages(images:ShareBoardImages[]): Observable<ImageLike[]>
+    {
+      return this.http.post<ImageLike[]>(`${this.dotnetImageUrl}GetLikes`,images)
+    }
+    /*public getlikedImages(member:string) : Observable<ImageLike[]>{      
           return this.http.get<ImageLike[]>(this.dotnetImageUrl +`member?member=${member}`);
     }
+          */
     public deleteImage(shareBoardId: number): Observable<ShareBoardImages> {
       return this.http.delete<ShareBoardImages>(`${this.dotnetImageUrl}Delete?shareBoardId=${shareBoardId}`);
     }
-    public getLikes(): Observable<IImageLikeCountDTO[]> {
+    /*public getLikes(): Observable<IImageLikeCountDTO[]> {
       return this.http.get<IImageLikeCountDTO[]>(`${this.dotnetImageUrl}likeCount`)
        
-    }
+    }*/
     public getScrollDownImages(shareBoardId: number, page: number): Observable<ShareBoardImages[]> {
-      const url = `${this.dotnetImageUrl}getScrollDownImages?shareBoardId=${shareBoardId}&page=${page}`;
+      const userId = localStorage.getItem('userId');
+      const url = `${this.dotnetImageUrl}getScrollDownImages?shareBoardId=${shareBoardId}&page=${page}&userId=${userId}`;
       return this.http.get<ShareBoardImages[]>(url);
     }
     public getScrollUpImages(shareBoardId: number, page: number): Observable<ShareBoardImages[]> {
-      const url = `${this.dotnetImageUrl}getScrollUpImages?shareBoardId=${shareBoardId}&page=${page}`;
+       const userId = localStorage.getItem('userId');
+      const url = `${this.dotnetImageUrl}getScrollUpImages?shareBoardId=${shareBoardId}&page=${page}&userId=${userId}`;
       return this.http.get<ShareBoardImages[]>(url);
     }
      
