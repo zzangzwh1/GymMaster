@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { Subject } from 'rxjs';
-import {   ImageLike, MemberAndCommentInfoDTO,ShareBoardImages } from '../interfaces/interface';
+import { ImageLike, MemberAndCommentInfoDTO,ShareBoardImages } from '../interfaces/interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignalrService {
   private hubConnection: HubConnection | undefined;
-   private commentHub: HubConnection | undefined;
-   private imageHub: HubConnection | undefined;
   private likeCountSubject = new Subject<ImageLike[]>();  
   private commentSubject = new Subject<MemberAndCommentInfoDTO[]>();
   private imageSubject = new Subject<ShareBoardImages[]>();
@@ -35,7 +33,7 @@ export class SignalrService {
       .build();
   }
 
- // SHub (Like count)
+ // Signal R Hub Connection
  public startConnection(): void {
   this.hubConnection = this.createHubConnection('https://localhost:7298/SHub');
 
@@ -44,41 +42,21 @@ export class SignalrService {
     .then(() => console.log('SHub connected'))
     .catch(err => console.error('SHub connection error:', err));
 }
-
+// real time like count increase/Decrease
 public listenForLikeCountUpdate(): void {
   this.hubConnection?.on('ReceiveLikeCountUpdate', (likeCounts: ImageLike[]) => {
     this.likeCountSubject.next(likeCounts);
   });
 }
-
-// CommentHub
-public startCommentHubConnection(): void {
-  this.commentHub = this.createHubConnection('https://localhost:7298/CommentHub');
-
-  this.commentHub
-    .start()
-    .then(() => console.log('CommentHub connected'))
-    .catch(err => console.error('CommentHub error:', err));
-}
-
+// real time comments for iamgages
 public listenForCommentUpdate(): void {
-  this.commentHub?.on('ReceiveComment', (comment: MemberAndCommentInfoDTO[]) => {
+  this.hubConnection?.on('ReceiveComment', (comment: MemberAndCommentInfoDTO[]) => {
     this.commentSubject.next(comment);
   });
 }
-
-// ImageHub
-public startImageConnection(): void {
-  this.imageHub = this.createHubConnection('https://localhost:7298/ImageHub');
-
-  this.imageHub
-    .start()
-    .then(() => console.log('ImageHub connected'))
-    .catch(err => console.error('ImageHub connection error:', err));
-}
-
+// real time image upload
 public listenForImage(): void {
-  this.imageHub?.on('ReceiveImage', (images: ShareBoardImages[]) => {
+  this.hubConnection?.on('ReceiveImage', (images: ShareBoardImages[]) => {
     this.imageSubject.next(images);
   });
 }

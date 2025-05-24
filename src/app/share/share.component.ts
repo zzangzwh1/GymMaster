@@ -77,21 +77,19 @@ isLoading :boolean = false;
   }  
 
   ngOnInit(): void {     
-     this.signalR();    
+    this.signalR();    
     this.memberId = localStorage.getItem('userId') || '';     
  
     if(this.router.url.includes('Home'))
     { 
-      this.isHome = true;  
-      console.log('NGONGINT~~~~',this.memberId);
+      this.isHome = true;     
       this.loadCurrentMemberImages(this.memberId);
  
     }
     else{   
       this.titleService.setTitle('Share');
       this.canScroll= true;
-      this.memberImages.filter(i=> i.shareBoardId).length >0 ? this.currentImageShardBoardId = this.memberImages.filter(i=> i.shareBoardId).length -1 : 0   
-      console.log('BEFORE LOAD~,',this.memberImages);  
+      this.memberImages.filter(i=> i.shareBoardId).length >0 ? this.currentImageShardBoardId = this.memberImages.filter(i=> i.shareBoardId).length -1 : 0;
       this.loadCurrentPageImages(this.currentImageShardBoardId ,this.page,true);
 
     }   
@@ -104,31 +102,22 @@ isLoading :boolean = false;
 
 
   signalR():void {
-    this.signalrService.startConnection();
+    this.signalrService.startConnection();  
     this.signalrService.listenForLikeCountUpdate();
-
-    this.signalrService.startCommentHubConnection();
     this.signalrService.listenForCommentUpdate();
-
-    
-    this.signalrService.startImageConnection();
     this.signalrService.listenForImage();
 
     this.signalrService.image$.subscribe(images =>{
       this.memberImages = images;
     })
     this.signalrService.likeCount$.subscribe((likeCounts) => {
-      this.likeImages = likeCounts;      
+      this.likeImages = likeCounts;    
      
-    });
-    
-  
+    }); 
+
     this.signalrService.comment$.subscribe(comment => {
     this.getCommentInfos = comment;
     });
-    this.signalrService.image$.subscribe(images =>{
-          this.memberImages = images;
-    })
   
   }
 
@@ -249,8 +238,7 @@ isLoading :boolean = false;
           .filter(i => i.shareBoardId === image.shareBoardId)  
           .forEach(i => i.likeImage = false); 
                     
-      }
-    //  console.log('TEST MEMBER IMAGES',this.memberImages);
+      }    
     this.getCurrentLikedImages( this.memberImages);
         
     },
@@ -296,10 +284,8 @@ isLoading :boolean = false;
     }    
     this.isLoading = true;  
     return new Promise((resolve, reject) => {
-      const handleSuccess = (images: ShareBoardImages[]) => {
-        
+      const handleSuccess = (images: ShareBoardImages[]) => {        
         if (images.length > 0) {
-         
           this.memberImages = [...images];       
           this.getCurrentLikedImages(images);
           this.getImageComments(images);
@@ -343,9 +329,7 @@ isLoading :boolean = false;
       next: (response) => {        
         let commentText = document.getElementById('commentText') as HTMLInputElement;      
         commentText.value = '';       
-        this.commentText = '';
-        console.log('Cuurrent ADDD~~ IMASGE',response);
-        console.log('ADDDD IMAGEEE~~',this.memberImages);
+        this.commentText = '';  
         inputElement.value ='';
         this.getImageComments(this.memberImages);
       },
@@ -356,8 +340,7 @@ isLoading :boolean = false;
     });
  
   }
-  public getImageComments(images:ShareBoardImages[]): void {   
-    console.log('TEST---getImageComments',images);
+  public getImageComments(images:ShareBoardImages[]): void {    
       this.comments.getComments(images).subscribe({
         next: (comments: any) => {         
             this.getCommentInfos = comments;
@@ -376,11 +359,9 @@ isLoading :boolean = false;
   }
   public deleteImage(image: ShareBoardImages): void {
     console.log('Delete Image', image);
-
-    // Call the deleteImage service method and subscribe to it
+  
     this.image.deleteImage(image.shareBoardId).subscribe({
-      next: (deletedShareBoard: ShareBoardImages) => {
-        console.log('Deleted Image Response: ', deletedShareBoard);     
+      next: (deletedShareBoard: ShareBoardImages) => {         
         const index = this.memberImages.findIndex(i => i.shareBoardId === image.shareBoardId);
         if (index !== -1) {
           this.memberImages.splice(index, 1);
