@@ -32,17 +32,10 @@ export class GetImage {
     {
       return this.http.post<ImageLike[]>(`${this.dotnetImageUrl}GetLikes`,images)
     }
-    /*public getlikedImages(member:string) : Observable<ImageLike[]>{      
-          return this.http.get<ImageLike[]>(this.dotnetImageUrl +`member?member=${member}`);
-    }
-          */
     public deleteImage(shareBoardId: number): Observable<ShareBoardImages> {
       return this.http.delete<ShareBoardImages>(`${this.dotnetImageUrl}Delete?shareBoardId=${shareBoardId}`);
     }
-    /*public getLikes(): Observable<IImageLikeCountDTO[]> {
-      return this.http.get<IImageLikeCountDTO[]>(`${this.dotnetImageUrl}likeCount`)
-       
-    }*/
+
     public getScrollDownImages(shareBoardId: number, page: number): Observable<ShareBoardImages[]> {
       const userId = localStorage.getItem('userId');
       const url = `${this.dotnetImageUrl}getScrollDownImages?shareBoardId=${shareBoardId}&page=${page}&userId=${userId}`;

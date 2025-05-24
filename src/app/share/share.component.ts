@@ -129,17 +129,7 @@ isLoading :boolean = false;
     this.signalrService.image$.subscribe(images =>{
           this.memberImages = images;
     })
-    console.log('SIGNAL R~~',this.memberImages);
-
-  /*  this.image.getLikedImages(this.memberImages).subscribe({
-      next: (response) => {
-         this.likeImages = response;
   
-      },
-      error: (err) => {
-              console.error('Error fetching likes:', err);
-      }
-    });*/
   }
 
 
@@ -196,15 +186,15 @@ isLoading :boolean = false;
           this.currentMemberId = memberRespone.userId;
           this.image.getMemberImage(memberRespone.memberId).subscribe(
             (images: ShareBoardImages[] | undefined) => {
-              if (!images || images.length === 0) {        
+              if (!images || images.length === 0) {       
              
                 this.memberImages = [];            
-              } else {           
+              } else {          
                 
+                this.memberImages = [...images]
                 this.getCurrentLikedImages(images);
                 this.getImageComments(images);                
-                this.memberImages = images;
-             
+                console.log('loadCurrentMemberImages');
              
               }
               this.isLoading= false;
@@ -228,10 +218,9 @@ isLoading :boolean = false;
     this.image.getLikedImages(images).subscribe({
      
       next :(response) =>{
-        
-       this.likeImages = response;    
-     
-       console.log('Current LIEKS~~~',this.likeImages);
+        console.log('TES~~t',response);      
+        this.likeImages = response;    
+   
       },
       error :(error) =>{
         console.log(error);
@@ -311,9 +300,7 @@ isLoading :boolean = false;
         
         if (images.length > 0) {
          
-          this.memberImages = [...images];
-          console.log('IMAGES~~~~~~~~~~~~',this.memberImages);
-          
+          this.memberImages = [...images];       
           this.getCurrentLikedImages(images);
           this.getImageComments(images);
          
